@@ -59,6 +59,7 @@ export const incidentService = {
   // Liste des incidents
   getAll: (params?: {
     page?: number;
+    per_page?: number;
     statut?: string;
     type?: string;
     priorite?: string;
@@ -69,6 +70,10 @@ export const incidentService = {
   // Mes incidents (pour l'utilisateur connecté)
   getMine: (params?: { page?: number; statut?: string }) =>
     api.get("/incidents/mes-incidents", { params }),
+
+  // Mes interventions (pour les maintenanciers)
+  getMyInterventions: (params?: { statut?: string }) =>
+    api.get("/incidents/mes-interventions", { params }),
 
   // Détail d'un incident
   getOne: (id: number) => api.get(`/incidents/${id}`),
@@ -112,11 +117,11 @@ export const incidentService = {
 
 export const userService = {
   // Liste des utilisateurs
-  getAll: (params?: { role?: string }) => api.get("/users", { params }),
+  getAll: (params?: { role?: string; search?: string; page?: number }) =>
+    api.get("/users", { params }),
 
-  // Liste des maintenanciers
-  getMaintenanciers: () =>
-    api.get("/users", { params: { role: "MAINTENANCIER" } }),
+  // Liste des maintenanciers (actifs uniquement)
+  getMaintenanciers: () => api.get("/users/maintenanciers"),
 
   // Détail d'un utilisateur
   getOne: (id: number) => api.get(`/users/${id}`),
@@ -126,6 +131,10 @@ export const userService = {
 
   // Mettre à jour un utilisateur
   update: (id: number, data: object) => api.put(`/users/${id}`, data),
+
+  // Réinitialiser le mot de passe (admin)
+  resetPassword: (id: number, data: { password: string }) =>
+    api.put(`/users/${id}/reset-password`, data),
 
   // Supprimer un utilisateur
   delete: (id: number) => api.delete(`/users/${id}`),

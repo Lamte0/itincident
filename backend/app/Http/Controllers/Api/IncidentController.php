@@ -13,10 +13,29 @@ class IncidentController extends Controller
 {
     /**
      * Liste tous les incidents (avec filtres)
+     * CHEF_SERVICE et ADMIN voient tous les incidents
+     * Les autres utilisateurs ne voient que leurs propres incidents
      */
     public function index(Request $request)
     {
+        $user = $request->user();
+
+        \Log::info('Incidents index called', [
+            'user_id' => $user->id,
+            'user_email' => $user->email,
+            'user_role' => $user->role,
+        ]);
+
         $query = Incident::with(['auteur', 'affectationActive.maintenancier']);
+
+        // Restreindre selon le rôle
+        if (!in_array($user->role, ['CHEF_SERVICE', 'ADMIN'])) {
+            // Les utilisateurs normaux ne voient que leurs propres incidents
+            $query->where('auteur_id', $user->id);
+            \Log::info('Filtering by auteur_id: ' . $user->id);
+        } else {
+            \Log::info('User is ADMIN/CHEF_SERVICE - showing all incidents');
+        }
 
         // Filtres
         if ($request->has('statut') && $request->statut) {
@@ -35,7 +54,12 @@ class IncidentController extends Controller
         // Tri par date de création décroissante
         $query->orderBy('created_at', 'desc');
 
-        return response()->json($query->paginate(15));
+        $perPage = $request->get('per_page', 15);
+        $result = $query->paginate($perPage);
+
+        \Log::info('Incidents count: ' . $result->total());
+
+        return response()->json($result);
     }
 
     /**
@@ -53,6 +77,33 @@ class IncidentController extends Controller
         $query->orderBy('created_at', 'desc');
 
         return response()->json($query->paginate(15));
+    }
+
+    /**
+     * Liste les incidents affectés au maintenancier connecté
+     */
+    public function mesInterventions(Request $request)
+    {
+        $user = $request->user();
+
+        // Vérifier que l'utilisateur est maintenancier
+        if ($user->role !== 'MAINTENANCIER') {
+            return response()->json(['message' => 'Non autorisé'], 403);
+        }
+
+        $query = Incident::with(['auteur', 'affectationActive.maintenancier', 'affectationActive.assignePar'])
+            ->whereHas('affectations', function ($q) use ($user) {
+                $q->where('maintenancier_id', $user->id)
+                  ->where('is_active', true);
+            });
+
+        if ($request->has('statut') && $request->statut) {
+            $query->where('statut', $request->statut);
+        }
+
+        $query->orderBy('updated_at', 'desc');
+
+        return response()->json($query->get());
     }
 
     /**

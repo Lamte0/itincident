@@ -30,11 +30,12 @@ const router = createRouter({
           component: () => import("@/views/DashboardView.vue"),
         },
 
-        // Incidents - Utilisateur
+        // Incidents - CHEF_SERVICE et ADMIN uniquement
         {
           path: "incidents",
           name: "incidents",
           component: () => import("@/views/incidents/IncidentListView.vue"),
+          meta: { roles: ["CHEF_SERVICE", "ADMIN"] },
         },
         {
           path: "incidents/nouveau",

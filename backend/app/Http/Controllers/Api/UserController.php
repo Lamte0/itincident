@@ -41,7 +41,6 @@ class UserController extends Controller
     public function maintenanciers()
     {
         $maintenanciers = User::where('role', 'MAINTENANCIER')
-            ->where('is_active', true)
             ->orderBy('name')
             ->get();
 

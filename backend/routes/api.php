@@ -27,6 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Incidents
     Route::get('/incidents', [IncidentController::class, 'index']);
     Route::get('/incidents/mes-incidents', [IncidentController::class, 'mesIncidents']);
+    Route::get('/incidents/mes-interventions', [IncidentController::class, 'mesInterventions']);
     Route::post('/incidents', [IncidentController::class, 'store']);
     Route::get('/incidents/{incident}', [IncidentController::class, 'show']);
     Route::put('/incidents/{incident}', [IncidentController::class, 'update']);

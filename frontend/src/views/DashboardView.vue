@@ -5,6 +5,9 @@ import {
   ClockIcon,
   CheckCircleIcon,
   WrenchScrewdriverIcon,
+  UsersIcon,
+  ClipboardDocumentListIcon,
+  ChartBarIcon,
 } from "@heroicons/vue/24/outline";
 
 const authStore = useAuthStore();
@@ -138,6 +141,52 @@ const stats = [
             <span class="absolute inset-0" aria-hidden="true"></span>
             <p class="text-sm font-medium text-gray-900">Mes interventions</p>
             <p class="text-sm text-gray-500">Incidents à traiter</p>
+          </div>
+        </RouterLink>
+
+        <!-- Actions Admin -->
+        <RouterLink
+          v-if="authStore.isAdmin"
+          to="/utilisateurs"
+          class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-primary-400 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500"
+        >
+          <div class="flex-shrink-0">
+            <UsersIcon class="h-10 w-10 text-purple-600" />
+          </div>
+          <div class="flex-1 min-w-0">
+            <span class="absolute inset-0" aria-hidden="true"></span>
+            <p class="text-sm font-medium text-gray-900">Utilisateurs</p>
+            <p class="text-sm text-gray-500">Gérer les utilisateurs et rôles</p>
+          </div>
+        </RouterLink>
+
+        <RouterLink
+          v-if="authStore.isAdmin"
+          to="/incidents"
+          class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-primary-400 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500"
+        >
+          <div class="flex-shrink-0">
+            <ClipboardDocumentListIcon class="h-10 w-10 text-indigo-600" />
+          </div>
+          <div class="flex-1 min-w-0">
+            <span class="absolute inset-0" aria-hidden="true"></span>
+            <p class="text-sm font-medium text-gray-900">Tous les incidents</p>
+            <p class="text-sm text-gray-500">Vue complète des incidents</p>
+          </div>
+        </RouterLink>
+
+        <RouterLink
+          v-if="authStore.isAdmin"
+          to="/affectations"
+          class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-primary-400 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500"
+        >
+          <div class="flex-shrink-0">
+            <ChartBarIcon class="h-10 w-10 text-teal-600" />
+          </div>
+          <div class="flex-1 min-w-0">
+            <span class="absolute inset-0" aria-hidden="true"></span>
+            <p class="text-sm font-medium text-gray-900">Affectations</p>
+            <p class="text-sm text-gray-500">Assigner aux techniciens</p>
           </div>
         </RouterLink>
       </div>

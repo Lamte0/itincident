@@ -25,17 +25,28 @@ export const useIncidentStore = defineStore("incidents", () => {
   });
 
   // Actions
-  async function fetchIncidents(page = 1) {
+  async function fetchIncidents(page = 1, perPage = 15) {
     loading.value = true;
     error.value = null;
 
     try {
-      const response = await incidentService.getAll({
+      console.log("Fetching incidents with params:", {
         page,
+        per_page: perPage,
         ...filters.value,
       });
+      const response = await incidentService.getAll({
+        page,
+        per_page: perPage,
+        ...filters.value,
+      });
+      console.log("API Full Response:", response);
+      console.log("API Response data:", response.data);
+      console.log("API Response data.data:", response.data.data);
+      console.log("API Response total:", response.data.total);
       const data: PaginatedResponse<Incident> = response.data;
       incidents.value = data.data;
+      console.log("Incidents loaded:", incidents.value);
       pagination.value = {
         currentPage: data.current_page,
         lastPage: data.last_page,
@@ -43,6 +54,7 @@ export const useIncidentStore = defineStore("incidents", () => {
         total: data.total,
       };
     } catch (err: any) {
+      console.error("Error fetching incidents:", err);
       error.value = err.response?.data?.message || "Erreur lors du chargement";
     } finally {
       loading.value = false;

@@ -289,8 +289,6 @@ Voir le fichier `PLANIFICATION_PROJET.md` pour la liste complète des tâches.
 
 ## 📄 Licence
 
-Projet développé pour la Direction Générale du Trésor et de la Comptabilité Publique.
+Projet développé pour la Direction Générale du Trésor et de la Comptabilité Publique par Romanuis et Oscar .
 
 ---
-
-_Généré le 6 janvier 2026_
