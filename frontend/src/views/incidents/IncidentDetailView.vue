@@ -193,11 +193,16 @@ async function rejeter() {
 async function downloadFiche() {
   if (!incident.value) return;
   try {
-    const response = await reportService.getFicheIntervention(incident.value.id);
+    const response = await reportService.getFicheIntervention(
+      incident.value.id
+    );
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `fiche-intervention-${incident.value.reference}.pdf`);
+    link.setAttribute(
+      "download",
+      `fiche-intervention-${incident.value.reference}.pdf`
+    );
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -224,11 +229,16 @@ onMounted(async () => {
   <div>
     <!-- Loading -->
     <div v-if="loading" class="flex justify-center py-12">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+      <div
+        class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"
+      ></div>
     </div>
 
     <!-- Error -->
-    <div v-else-if="error" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+    <div
+      v-else-if="error"
+      class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg"
+    >
       {{ error }}
     </div>
 
@@ -247,11 +257,23 @@ onMounted(async () => {
         <div class="sm:flex sm:items-center sm:justify-between">
           <div>
             <div class="flex items-center space-x-3">
-              <h1 class="text-2xl font-bold text-gray-900">{{ incident.reference }}</h1>
-              <span :class="['px-3 py-1 text-sm font-semibold rounded-full', getStatutBadge(incident.statut)]">
+              <h1 class="text-2xl font-bold text-gray-900">
+                {{ incident.reference }}
+              </h1>
+              <span
+                :class="[
+                  'px-3 py-1 text-sm font-semibold rounded-full',
+                  getStatutBadge(incident.statut),
+                ]"
+              >
                 {{ incident.statut.replace(/_/g, " ") }}
               </span>
-              <span :class="['px-3 py-1 text-sm font-semibold rounded-full', getPrioriteBadge(incident.priorite)]">
+              <span
+                :class="[
+                  'px-3 py-1 text-sm font-semibold rounded-full',
+                  getPrioriteBadge(incident.priorite),
+                ]"
+              >
                 {{ incident.priorite }}
               </span>
             </div>
@@ -322,14 +344,23 @@ onMounted(async () => {
           <!-- Description -->
           <div class="bg-white shadow rounded-lg p-6">
             <h2 class="text-lg font-medium text-gray-900 mb-4">Description</h2>
-            <p class="text-gray-700 whitespace-pre-wrap">{{ incident.description }}</p>
+            <p class="text-gray-700 whitespace-pre-wrap">
+              {{ incident.description }}
+            </p>
           </div>
 
           <!-- Images -->
-          <div v-if="incident.images?.length" class="bg-white shadow rounded-lg p-6">
+          <div
+            v-if="incident.images?.length"
+            class="bg-white shadow rounded-lg p-6"
+          >
             <h2 class="text-lg font-medium text-gray-900 mb-4">Images</h2>
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-              <div v-for="image in incident.images" :key="image.id" class="relative">
+              <div
+                v-for="image in incident.images"
+                :key="image.id"
+                class="relative"
+              >
                 <img
                   :src="`http://localhost:8000/storage/${image.chemin}`"
                   :alt="image.nom_fichier"
@@ -340,29 +371,46 @@ onMounted(async () => {
           </div>
 
           <!-- Historique -->
-          <div v-if="incident.historique_statuts?.length" class="bg-white shadow rounded-lg p-6">
+          <div
+            v-if="incident.historique_statuts?.length"
+            class="bg-white shadow rounded-lg p-6"
+          >
             <h2 class="text-lg font-medium text-gray-900 mb-4">Historique</h2>
             <div class="flow-root">
               <ul class="-mb-8">
-                <li v-for="(item, index) in incident.historique_statuts" :key="item.id" class="relative pb-8">
+                <li
+                  v-for="(item, index) in incident.historique_statuts"
+                  :key="item.id"
+                  class="relative pb-8"
+                >
                   <span
                     v-if="index !== incident.historique_statuts.length - 1"
                     class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"
                   ></span>
                   <div class="relative flex space-x-3">
                     <div>
-                      <span class="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center">
+                      <span
+                        class="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center"
+                      >
                         <ClockIcon class="h-5 w-5 text-primary-600" />
                       </span>
                     </div>
-                    <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                    <div
+                      class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4"
+                    >
                       <div>
                         <p class="text-sm text-gray-500">
-                          <span class="font-medium text-gray-900">{{ item.nouveau_statut.replace(/_/g, " ") }}</span>
-                          <span v-if="item.commentaire"> - {{ item.commentaire }}</span>
+                          <span class="font-medium text-gray-900">{{
+                            item.nouveau_statut.replace(/_/g, " ")
+                          }}</span>
+                          <span v-if="item.commentaire">
+                            - {{ item.commentaire }}</span
+                          >
                         </p>
                       </div>
-                      <div class="text-right text-sm whitespace-nowrap text-gray-500">
+                      <div
+                        class="text-right text-sm whitespace-nowrap text-gray-500"
+                      >
                         {{ formatDate(item.created_at) }}
                       </div>
                     </div>
@@ -373,9 +421,16 @@ onMounted(async () => {
           </div>
 
           <!-- Rapport d'intervention -->
-          <div v-if="incident.affectation_active?.rapport_intervention" class="bg-white shadow rounded-lg p-6">
-            <h2 class="text-lg font-medium text-gray-900 mb-4">Rapport d'intervention</h2>
-            <p class="text-gray-700 whitespace-pre-wrap">{{ incident.affectation_active.rapport_intervention }}</p>
+          <div
+            v-if="incident.affectation_active?.rapport_intervention"
+            class="bg-white shadow rounded-lg p-6"
+          >
+            <h2 class="text-lg font-medium text-gray-900 mb-4">
+              Rapport d'intervention
+            </h2>
+            <p class="text-gray-700 whitespace-pre-wrap">
+              {{ incident.affectation_active.rapport_intervention }}
+            </p>
           </div>
 
           <!-- Note et commentaire validation -->
@@ -383,12 +438,19 @@ onMounted(async () => {
             <h2 class="text-lg font-medium text-gray-900 mb-4">Évaluation</h2>
             <div class="flex items-center space-x-1 mb-2">
               <template v-for="i in 5" :key="i">
-                <StarSolidIcon v-if="i <= incident.note" class="h-5 w-5 text-yellow-400" />
+                <StarSolidIcon
+                  v-if="i <= incident.note"
+                  class="h-5 w-5 text-yellow-400"
+                />
                 <StarIcon v-else class="h-5 w-5 text-gray-300" />
               </template>
-              <span class="ml-2 text-sm text-gray-600">{{ incident.note }}/5</span>
+              <span class="ml-2 text-sm text-gray-600"
+                >{{ incident.note }}/5</span
+              >
             </div>
-            <p v-if="incident.commentaire_validation" class="text-gray-700">{{ incident.commentaire_validation }}</p>
+            <p v-if="incident.commentaire_validation" class="text-gray-700">
+              {{ incident.commentaire_validation }}
+            </p>
           </div>
         </div>
 
@@ -404,7 +466,9 @@ onMounted(async () => {
                 </dt>
                 <dd class="ml-3">
                   <p class="text-sm font-medium text-gray-900">Déclaré par</p>
-                  <p class="text-sm text-gray-500">{{ incident.auteur?.name }}</p>
+                  <p class="text-sm text-gray-500">
+                    {{ incident.auteur?.name }}
+                  </p>
                 </dd>
               </div>
               <div class="flex items-start">
@@ -412,8 +476,12 @@ onMounted(async () => {
                   <CalendarIcon class="h-5 w-5 text-gray-400" />
                 </dt>
                 <dd class="ml-3">
-                  <p class="text-sm font-medium text-gray-900">Date de création</p>
-                  <p class="text-sm text-gray-500">{{ formatDate(incident.created_at) }}</p>
+                  <p class="text-sm font-medium text-gray-900">
+                    Date de création
+                  </p>
+                  <p class="text-sm text-gray-500">
+                    {{ formatDate(incident.created_at) }}
+                  </p>
                 </dd>
               </div>
               <div class="flex items-start">
@@ -438,24 +506,41 @@ onMounted(async () => {
           </div>
 
           <!-- Affectation -->
-          <div v-if="incident.affectation_active" class="bg-white shadow rounded-lg p-6">
+          <div
+            v-if="incident.affectation_active"
+            class="bg-white shadow rounded-lg p-6"
+          >
             <h2 class="text-lg font-medium text-gray-900 mb-4">Affectation</h2>
             <dl class="space-y-4">
               <div>
                 <dt class="text-sm font-medium text-gray-900">Maintenancier</dt>
-                <dd class="text-sm text-gray-500">{{ incident.affectation_active.maintenancier?.name }}</dd>
+                <dd class="text-sm text-gray-500">
+                  {{ incident.affectation_active.maintenancier?.name }}
+                </dd>
               </div>
               <div v-if="incident.affectation_active.instructions">
                 <dt class="text-sm font-medium text-gray-900">Instructions</dt>
-                <dd class="text-sm text-gray-500">{{ incident.affectation_active.instructions }}</dd>
+                <dd class="text-sm text-gray-500">
+                  {{ incident.affectation_active.instructions }}
+                </dd>
               </div>
               <div>
-                <dt class="text-sm font-medium text-gray-900">Date d'affectation</dt>
-                <dd class="text-sm text-gray-500">{{ formatDate(incident.affectation_active.date_affectation) }}</dd>
+                <dt class="text-sm font-medium text-gray-900">
+                  Date d'affectation
+                </dt>
+                <dd class="text-sm text-gray-500">
+                  {{ formatDate(incident.affectation_active.date_affectation) }}
+                </dd>
               </div>
               <div v-if="incident.affectation_active.date_prise_en_charge">
-                <dt class="text-sm font-medium text-gray-900">Prise en charge</dt>
-                <dd class="text-sm text-gray-500">{{ formatDate(incident.affectation_active.date_prise_en_charge) }}</dd>
+                <dt class="text-sm font-medium text-gray-900">
+                  Prise en charge
+                </dt>
+                <dd class="text-sm text-gray-500">
+                  {{
+                    formatDate(incident.affectation_active.date_prise_en_charge)
+                  }}
+                </dd>
               </div>
             </dl>
           </div>
@@ -463,25 +548,43 @@ onMounted(async () => {
       </div>
 
       <!-- Modal Affectation -->
-      <div v-if="showAffectationModal" class="fixed inset-0 z-50 overflow-y-auto">
+      <div
+        v-if="showAffectationModal"
+        class="fixed inset-0 z-50 overflow-y-auto"
+      >
         <div class="flex items-center justify-center min-h-screen px-4">
-          <div class="fixed inset-0 bg-gray-500 bg-opacity-75" @click="showAffectationModal = false"></div>
-          <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Affecter l'incident</h3>
+          <div
+            class="fixed inset-0 bg-gray-500 bg-opacity-75"
+            @click="showAffectationModal = false"
+          ></div>
+          <div
+            class="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6"
+          >
+            <h3 class="text-lg font-medium text-gray-900 mb-4">
+              Affecter l'incident
+            </h3>
             <form @submit.prevent="affecter" class="space-y-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700">Maintenancier *</label>
+                <label class="block text-sm font-medium text-gray-700"
+                  >Maintenancier *</label
+                >
                 <select
                   v-model="affectationForm.maintenancier_id"
                   required
                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
                 >
-                  <option value="0" disabled>Sélectionner un maintenancier</option>
-                  <option v-for="m in maintenanciers" :key="m.id" :value="m.id">{{ m.name }}</option>
+                  <option value="0" disabled>
+                    Sélectionner un maintenancier
+                  </option>
+                  <option v-for="m in maintenanciers" :key="m.id" :value="m.id">
+                    {{ m.name }}
+                  </option>
                 </select>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700">Instructions</label>
+                <label class="block text-sm font-medium text-gray-700"
+                  >Instructions</label
+                >
                 <textarea
                   v-model="affectationForm.instructions"
                   rows="3"
@@ -489,10 +592,18 @@ onMounted(async () => {
                 ></textarea>
               </div>
               <div class="flex justify-end space-x-3">
-                <button type="button" @click="showAffectationModal = false" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
+                <button
+                  type="button"
+                  @click="showAffectationModal = false"
+                  class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                >
                   Annuler
                 </button>
-                <button type="submit" :disabled="!affectationForm.maintenancier_id" class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700 disabled:opacity-50">
+                <button
+                  type="submit"
+                  :disabled="!affectationForm.maintenancier_id"
+                  class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700 disabled:opacity-50"
+                >
                   Affecter
                 </button>
               </div>
@@ -502,14 +613,26 @@ onMounted(async () => {
       </div>
 
       <!-- Modal Résolution -->
-      <div v-if="showResolutionModal" class="fixed inset-0 z-50 overflow-y-auto">
+      <div
+        v-if="showResolutionModal"
+        class="fixed inset-0 z-50 overflow-y-auto"
+      >
         <div class="flex items-center justify-center min-h-screen px-4">
-          <div class="fixed inset-0 bg-gray-500 bg-opacity-75" @click="showResolutionModal = false"></div>
-          <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Marquer comme résolu</h3>
+          <div
+            class="fixed inset-0 bg-gray-500 bg-opacity-75"
+            @click="showResolutionModal = false"
+          ></div>
+          <div
+            class="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6"
+          >
+            <h3 class="text-lg font-medium text-gray-900 mb-4">
+              Marquer comme résolu
+            </h3>
             <form @submit.prevent="resoudre" class="space-y-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700">Rapport d'intervention *</label>
+                <label class="block text-sm font-medium text-gray-700"
+                  >Rapport d'intervention *</label
+                >
                 <textarea
                   v-model="resolutionForm.rapport_intervention"
                   rows="4"
@@ -519,10 +642,18 @@ onMounted(async () => {
                 ></textarea>
               </div>
               <div class="flex justify-end space-x-3">
-                <button type="button" @click="showResolutionModal = false" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
+                <button
+                  type="button"
+                  @click="showResolutionModal = false"
+                  class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                >
                   Annuler
                 </button>
-                <button type="submit" :disabled="!resolutionForm.rapport_intervention" class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 disabled:opacity-50">
+                <button
+                  type="submit"
+                  :disabled="!resolutionForm.rapport_intervention"
+                  class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 disabled:opacity-50"
+                >
                   Marquer résolu
                 </button>
               </div>
@@ -532,14 +663,26 @@ onMounted(async () => {
       </div>
 
       <!-- Modal Validation -->
-      <div v-if="showValidationModal" class="fixed inset-0 z-50 overflow-y-auto">
+      <div
+        v-if="showValidationModal"
+        class="fixed inset-0 z-50 overflow-y-auto"
+      >
         <div class="flex items-center justify-center min-h-screen px-4">
-          <div class="fixed inset-0 bg-gray-500 bg-opacity-75" @click="showValidationModal = false"></div>
-          <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Valider et clôturer</h3>
+          <div
+            class="fixed inset-0 bg-gray-500 bg-opacity-75"
+            @click="showValidationModal = false"
+          ></div>
+          <div
+            class="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6"
+          >
+            <h3 class="text-lg font-medium text-gray-900 mb-4">
+              Valider et clôturer
+            </h3>
             <form @submit.prevent="valider" class="space-y-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Note</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                  >Note</label
+                >
                 <div class="flex items-center space-x-1">
                   <button
                     v-for="i in 5"
@@ -548,13 +691,21 @@ onMounted(async () => {
                     @click="validationForm.note = i"
                     class="focus:outline-none"
                   >
-                    <StarSolidIcon v-if="i <= validationForm.note" class="h-8 w-8 text-yellow-400" />
-                    <StarIcon v-else class="h-8 w-8 text-gray-300 hover:text-yellow-400" />
+                    <StarSolidIcon
+                      v-if="i <= validationForm.note"
+                      class="h-8 w-8 text-yellow-400"
+                    />
+                    <StarIcon
+                      v-else
+                      class="h-8 w-8 text-gray-300 hover:text-yellow-400"
+                    />
                   </button>
                 </div>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700">Commentaire</label>
+                <label class="block text-sm font-medium text-gray-700"
+                  >Commentaire</label
+                >
                 <textarea
                   v-model="validationForm.commentaire_validation"
                   rows="3"
@@ -562,10 +713,17 @@ onMounted(async () => {
                 ></textarea>
               </div>
               <div class="flex justify-end space-x-3">
-                <button type="button" @click="showValidationModal = false" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
+                <button
+                  type="button"
+                  @click="showValidationModal = false"
+                  class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                >
                   Annuler
                 </button>
-                <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700">
+                <button
+                  type="submit"
+                  class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700"
+                >
                   Valider et clôturer
                 </button>
               </div>
@@ -577,12 +735,21 @@ onMounted(async () => {
       <!-- Modal Rejet -->
       <div v-if="showRejetModal" class="fixed inset-0 z-50 overflow-y-auto">
         <div class="flex items-center justify-center min-h-screen px-4">
-          <div class="fixed inset-0 bg-gray-500 bg-opacity-75" @click="showRejetModal = false"></div>
-          <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Rejeter la résolution</h3>
+          <div
+            class="fixed inset-0 bg-gray-500 bg-opacity-75"
+            @click="showRejetModal = false"
+          ></div>
+          <div
+            class="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6"
+          >
+            <h3 class="text-lg font-medium text-gray-900 mb-4">
+              Rejeter la résolution
+            </h3>
             <form @submit.prevent="rejeter" class="space-y-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700">Motif du rejet *</label>
+                <label class="block text-sm font-medium text-gray-700"
+                  >Motif du rejet *</label
+                >
                 <textarea
                   v-model="rejetForm.motif"
                   rows="4"
@@ -592,10 +759,18 @@ onMounted(async () => {
                 ></textarea>
               </div>
               <div class="flex justify-end space-x-3">
-                <button type="button" @click="showRejetModal = false" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
+                <button
+                  type="button"
+                  @click="showRejetModal = false"
+                  class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                >
                   Annuler
                 </button>
-                <button type="submit" :disabled="!rejetForm.motif" class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 disabled:opacity-50">
+                <button
+                  type="submit"
+                  :disabled="!rejetForm.motif"
+                  class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 disabled:opacity-50"
+                >
                   Rejeter
                 </button>
               </div>
@@ -606,7 +781,10 @@ onMounted(async () => {
     </template>
 
     <!-- Incident non trouvé -->
-    <div v-else class="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded-lg">
+    <div
+      v-else
+      class="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded-lg"
+    >
       Incident non trouvé
     </div>
   </div>
