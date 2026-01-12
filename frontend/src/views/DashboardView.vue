@@ -45,9 +45,9 @@ const stats = [
   <div>
     <div class="mb-8">
       <h1 class="text-2xl font-bold text-gray-900">
-        Bonjour, {{ authStore.user?.name }} 👋
+        Bonjour, {{ authStore.user?.name }} 
       </h1>
-      <p class="mt-1 text-sm text-gray-500">
+      <p class="mt-1 text-sm text-blue-500">
         Bienvenue sur le système de gestion des incidents informatiques de la
         DGTCP
       </p>

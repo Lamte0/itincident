@@ -45,7 +45,7 @@ onMounted(() => {
       <div class="mt-4 sm:mt-0">
         <RouterLink
           to="/incidents/nouveau"
-          class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
+          class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-black bg-primary-600 hover:bg-primary-700"
         >
           <PlusIcon class="h-5 w-5 mr-2" />
           Nouvel incident
@@ -85,7 +85,7 @@ onMounted(() => {
       <div class="mt-6">
         <RouterLink
           to="/incidents/nouveau"
-          class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
+          class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-green bg-primary-600 hover:bg-primary-700"
         >
           <PlusIcon class="h-5 w-5 mr-2" />
           Déclarer un incident
