@@ -26,25 +26,25 @@ const navigation = [
     name: "Mes Incidents",
     href: "/mes-incidents",
     icon: ExclamationTriangleIcon,
-    roles: ["UTILISATEUR", "MAINTENANCIER", "CHEF_SERVICE", "ADMIN"],
+    roles: ["AGENT", "TECHNICIEN", "SUPERVISEUR", "ADMIN"],
   },
   {
     name: "Nouveau Incident",
     href: "/incidents/nouveau",
     icon: ClipboardDocumentListIcon,
-    roles: ["UTILISATEUR", "MAINTENANCIER", "CHEF_SERVICE", "ADMIN"],
+    roles: ["AGENT", "TECHNICIEN", "SUPERVISEUR", "ADMIN"],
   },
   {
     name: "Tous les Incidents",
     href: "/incidents",
     icon: ClipboardDocumentListIcon,
-    roles: ["CHEF_SERVICE", "ADMIN"],
+    roles: ["SUPERVISEUR", "ADMIN"],
   },
   {
     name: "Affectations",
     href: "/affectations",
     icon: ClipboardDocumentListIcon,
-    roles: ["CHEF_SERVICE", "ADMIN"],
+    roles: ["SUPERVISEUR", "ADMIN"],
   },
   {
     name: "Mes Interventions",
@@ -56,13 +56,13 @@ const navigation = [
     name: "Statistiques",
     href: "/statistiques",
     icon: ChartBarIcon,
-    roles: ["CHEF_SERVICE", "ADMIN"],
+    roles: ["SUPERVISEUR", "ADMIN"],
   },
   {
     name: "Rapports",
     href: "/rapports",
     icon: DocumentTextIcon,
-    roles: ["CHEF_SERVICE", "ADMIN"],
+    roles: ["SUPERVISEUR", "ADMIN"],
   },
   {
     name: "Utilisateurs",
@@ -74,6 +74,10 @@ const navigation = [
 
 const filteredNavigation = navigation.filter((item) => {
   if (item.roles.includes("all")) return true;
+  if (authStore.user?.role === "MAINTENANCIER") {
+    // Maintenanciers voient seulement ces items
+    return ["Mes Incidents", "Nouveau Incident", "Mes Interventions"].includes(item.name);
+  }
   return authStore.hasRole(item.roles);
 });
 
@@ -86,7 +90,7 @@ function getRoleBadgeColor(role: string) {
   switch (role) {
     case "ADMIN":
       return "bg-red-100 text-red-800";
-    case "CHEF_SERVICE":
+    case "SUPERVISEUR":
       return "bg-purple-100 text-purple-800";
     case "MAINTENANCIER":
       return "bg-blue-100 text-blue-800";

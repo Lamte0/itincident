@@ -55,7 +55,7 @@ const rejetForm = ref({
 // Computed pour permissions
 const canAffecter = computed(() => {
   return (
-    authStore.hasRole(["CHEF_SERVICE", "ADMIN"]) &&
+    authStore.hasRole(["SUPERVISEUR", "ADMIN"]) &&
     incident.value?.statut === "OUVERT"
   );
 });
@@ -293,7 +293,7 @@ onMounted(async () => {
             <button
               v-if="canAffecter"
               @click="openAffectationModal"
-              class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
+              class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-black bg-primary-600 hover:bg-primary-700"
             >
               <PaperAirplaneIcon class="h-5 w-5 mr-2" />
               Affecter
@@ -574,7 +574,7 @@ onMounted(async () => {
                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
                 >
                   <option value="0" disabled>
-                    Sélectionner un maintenancier
+                    Sélectionner un technicien
                   </option>
                   <option v-for="m in maintenanciers" :key="m.id" :value="m.id">
                     {{ m.name }}
@@ -602,7 +602,7 @@ onMounted(async () => {
                 <button
                   type="submit"
                   :disabled="!affectationForm.maintenancier_id"
-                  class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700 disabled:opacity-50"
+                  class="px-4 py-2 text-sm font-medium text-red bg-primary-600 rounded-md hover:bg-primary-700 disabled:opacity-50"
                 >
                   Affecter
                 </button>

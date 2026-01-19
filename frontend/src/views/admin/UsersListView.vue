@@ -39,7 +39,7 @@ const createForm = ref({
   name: "",
   email: "",
   password: "",
-  role: "UTILISATEUR" as UserRole,
+  role: "AGENT" as UserRole,
   service: "",
   telephone: "",
   matricule: "",
@@ -48,7 +48,7 @@ const createForm = ref({
 const editForm = ref({
   name: "",
   email: "",
-  role: "UTILISATEUR" as UserRole,
+  role: "AGENT" as UserRole,
   service: "",
   telephone: "",
   matricule: "",
@@ -62,9 +62,9 @@ const resetPasswordForm = ref({
 
 // Roles disponibles
 const roles: { value: UserRole; label: string }[] = [
-  { value: "UTILISATEUR", label: "Utilisateur" },
+  { value: "AGENT", label: "Agent" },
   { value: "MAINTENANCIER", label: "Maintenancier" },
-  { value: "CHEF_SERVICE", label: "Chef de Service" },
+  { value: "SUPERVISEUR", label: "Superviseur" },
   { value: "ADMIN", label: "Administrateur" },
 ];
 
@@ -209,7 +209,7 @@ function resetCreateForm() {
     name: "",
     email: "",
     password: "",
-    role: "UTILISATEUR",
+    role: "AGENT",
     service: "",
     telephone: "",
     matricule: "",
@@ -219,9 +219,9 @@ function resetCreateForm() {
 function getRoleBadge(role: UserRole): string {
   const badges: Record<UserRole, string> = {
     ADMIN: "bg-purple-100 text-purple-800",
-    CHEF_SERVICE: "bg-blue-100 text-blue-800",
+    SUPERVISEUR: "bg-blue-100 text-blue-800",
     MAINTENANCIER: "bg-green-100 text-green-800",
-    UTILISATEUR: "bg-gray-100 text-gray-800",
+    AGENT: "bg-gray-100 text-gray-800",
   };
   return badges[role] || "bg-gray-100 text-gray-800";
 }
@@ -229,9 +229,9 @@ function getRoleBadge(role: UserRole): string {
 function getRoleLabel(role: UserRole): string {
   const labels: Record<UserRole, string> = {
     ADMIN: "Admin",
-    CHEF_SERVICE: "Chef Service",
+    SUPERVISEUR: "Superviseur",
     MAINTENANCIER: "Maintenancier",
-    UTILISATEUR: "Utilisateur",
+    AGENT: "Agent",
   };
   return labels[role] || role;
 }

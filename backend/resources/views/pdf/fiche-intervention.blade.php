@@ -349,7 +349,7 @@
                 <div class="signature-line">{{ $incident->affectationActive->maintenancier->name }}</div>
             </div>
             <div class="signature-cell">
-                <strong>Le Chef Service</strong>
+                <strong>Le Superviseur</strong>
                 <div class="signature-line">{{ $incident->affectationActive->assignePar->name }}</div>
             </div>
             @endif

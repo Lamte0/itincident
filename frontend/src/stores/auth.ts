@@ -13,10 +13,10 @@ export const useAuthStore = defineStore("auth", () => {
   const isAuthenticated = computed(() => !!token.value && !!user.value);
   const isAdmin = computed(() => user.value?.role === "ADMIN");
   const isChefService = computed(
-    () => user.value?.role === "CHEF_SERVICE" || user.value?.role === "ADMIN"
+    () => user.value?.role === "SUPERVISEUR" || user.value?.role === "ADMIN"
   );
   const isMaintenancier = computed(() => user.value?.role === "MAINTENANCIER");
-  const isUtilisateur = computed(() => user.value?.role === "UTILISATEUR");
+  const isUtilisateur = computed(() => user.value?.role === "AGENT");
 
   // Actions
   async function login(email: string, password: string) {
@@ -96,10 +96,7 @@ export const useAuthStore = defineStore("auth", () => {
   }
 
   function initAuth() {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser && token.value) {
-      user.value = JSON.parse(storedUser);
-      // Vérifier que le token est toujours valide
+    if (token.value) {
       fetchUser();
     }
   }

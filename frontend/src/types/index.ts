@@ -1,9 +1,9 @@
 // Types pour l'application de gestion des incidents
 
 export type UserRole =
-  | "UTILISATEUR"
+  | "AGENT"
   | "MAINTENANCIER"
-  | "CHEF_SERVICE"
+  | "SUPERVISEUR"
   | "ADMIN";
 
 export type IncidentType = "RESEAU" | "LOGICIEL" | "HARDWARE";

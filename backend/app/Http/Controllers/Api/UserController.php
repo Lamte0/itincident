@@ -56,7 +56,7 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', Password::defaults()],
-            'role' => ['required', 'in:UTILISATEUR,MAINTENANCIER,CHEF_SERVICE,ADMIN'],
+            'role' => ['required', 'in:AGENT,MAINTENANCIER,SUPERVISEUR,ADMIN'],
             'service' => ['nullable', 'string', 'max:255'],
             'telephone' => ['nullable', 'string', 'max:20'],
             'matricule' => ['nullable', 'string', 'max:50', 'unique:users'],
@@ -94,7 +94,7 @@ class UserController extends Controller
         $request->validate([
             'name' => ['sometimes', 'string', 'max:255'],
             'email' => ['sometimes', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
-            'role' => ['sometimes', 'in:UTILISATEUR,MAINTENANCIER,CHEF_SERVICE,ADMIN'],
+            'role' => ['sometimes', 'in:AGENT,MAINTENANCIER,SUPERVISEUR,ADMIN'],
             'service' => ['nullable', 'string', 'max:255'],
             'telephone' => ['nullable', 'string', 'max:20'],
             'matricule' => ['nullable', 'string', 'max:50', 'unique:users,matricule,' . $user->id],

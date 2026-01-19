@@ -97,7 +97,7 @@ class User extends Authenticatable
      */
     public function isChefService(): bool
     {
-        return $this->role === 'CHEF_SERVICE' || $this->role === 'ADMIN';
+        return $this->role === 'SUPERVISEUR' || $this->role === 'ADMIN';
     }
 
     /**

@@ -32,7 +32,7 @@ class AuthController extends Controller
             'service' => $request->service,
             'telephone' => $request->telephone,
             'matricule' => $request->matricule,
-            'role' => 'UTILISATEUR', // Rôle par défaut
+            'role' => 'AGENT', // Rôle par défaut
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;

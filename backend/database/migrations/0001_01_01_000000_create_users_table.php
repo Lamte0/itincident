@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('role', ['UTILISATEUR', 'MAINTENANCIER', 'CHEF_SERVICE', 'ADMIN'])->default('UTILISATEUR');
+            $table->enum('role', ['AGENT', 'MAINTENANCIER', 'SUPERVISEUR', 'ADMIN'])->default('AGENT');
             $table->string('service')->nullable(); // Service/département de l'utilisateur
             $table->string('telephone')->nullable();
             $table->string('matricule')->nullable()->unique(); // Numéro matricule agent

@@ -13,7 +13,7 @@ class IncidentController extends Controller
 {
     /**
      * Liste tous les incidents (avec filtres)
-     * CHEF_SERVICE et ADMIN voient tous les incidents
+     * SUPERVISEUR et ADMIN voient tous les incidents
      * Les autres utilisateurs ne voient que leurs propres incidents
      */
     public function index(Request $request)
@@ -29,12 +29,12 @@ class IncidentController extends Controller
         $query = Incident::with(['auteur', 'affectationActive.maintenancier']);
 
         // Restreindre selon le rôle
-        if (!in_array($user->role, ['CHEF_SERVICE', 'ADMIN'])) {
+        if (!in_array($user->role, ['SUPERVISEUR', 'ADMIN'])) {
             // Les utilisateurs normaux ne voient que leurs propres incidents
             $query->where('auteur_id', $user->id);
             \Log::info('Filtering by auteur_id: ' . $user->id);
         } else {
-            \Log::info('User is ADMIN/CHEF_SERVICE - showing all incidents');
+            \Log::info('User is ADMIN/SUPERVISEUR - showing all incidents');
         }
 
         // Filtres
@@ -243,7 +243,7 @@ class IncidentController extends Controller
     }
 
     /**
-     * Affecter un incident à un maintenancier (Chef Service)
+     * Affecter un incident à un maintenancier (Superviseur)
      */
     public function affecter(Request $request, Incident $incident)
     {

@@ -554,7 +554,7 @@ onMounted(async () => {
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
               >
                 <option value="0" disabled>
-                  Sélectionner un maintenancier
+                  Sélectionner un technicien
                 </option>
                 <option v-for="m in maintenanciers" :key="m.id" :value="m.id">
                   {{ m.name }}
@@ -576,7 +576,7 @@ onMounted(async () => {
               <button
                 type="button"
                 @click="showAffectationModal = false"
-                class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-700 rounded-md hover:bg-gray-200"
               >
                 Annuler
               </button>

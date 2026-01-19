@@ -116,7 +116,7 @@ function closeAffectationModal() {
 
 async function affecterIncident() {
   if (!selectedIncident.value || !affectationForm.value.maintenancier_id) {
-    affectationError.value = "Veuillez sélectionner un maintenancier";
+    affectationError.value = "Veuillez sélectionner un technicien";
     return;
   }
 
@@ -158,14 +158,14 @@ async function affecterIncident() {
 // Vérifier si l'utilisateur peut affecter
 function canAffecter(incident: Incident): boolean {
   return (
-    authStore.hasRole(["CHEF_SERVICE", "ADMIN"]) && incident.statut === "OUVERT"
+    authStore.hasRole(["SUPERVISEUR", "ADMIN"]) && incident.statut === "OUVERT"
   );
 }
 
 onMounted(() => {
   incidentStore.fetchIncidents();
   // Charger les maintenanciers si l'utilisateur peut affecter
-  if (authStore.hasRole(["CHEF_SERVICE", "ADMIN"])) {
+  if (authStore.hasRole(["SUPERVISEUR", "ADMIN"])) {
     loadMaintenanciers();
   }
 });
@@ -533,7 +533,7 @@ onMounted(() => {
                 class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
               >
                 <option :value="0" disabled>
-                  -- Sélectionner un maintenancier --
+                  -- Sélectionner un technicien --
                 </option>
                 <option v-for="m in maintenanciers" :key="m.id" :value="m.id">
                   {{ m.name }}

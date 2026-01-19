@@ -30,12 +30,12 @@ const router = createRouter({
           component: () => import("@/views/DashboardView.vue"),
         },
 
-        // Incidents - CHEF_SERVICE et ADMIN uniquement
+        // Incidents - SUPERVISEUR et ADMIN uniquement
         {
           path: "incidents",
           name: "incidents",
           component: () => import("@/views/incidents/IncidentListView.vue"),
-          meta: { roles: ["CHEF_SERVICE", "ADMIN"] },
+          meta: { roles: ["SUPERVISEUR", "ADMIN"] },
         },
         {
           path: "incidents/nouveau",
@@ -54,13 +54,13 @@ const router = createRouter({
           component: () => import("@/views/incidents/MesIncidentsView.vue"),
         },
 
-        // Affectations - Chef Service
+        // Affectations - Superviseur
         {
           path: "affectations",
           name: "affectations",
           component: () =>
             import("@/views/affectations/AffectationListView.vue"),
-          meta: { roles: ["CHEF_SERVICE", "ADMIN"] },
+          meta: { roles: ["SUPERVISEUR", "ADMIN"] },
         },
 
         // Interventions - Maintenancier
@@ -72,18 +72,18 @@ const router = createRouter({
           meta: { roles: ["MAINTENANCIER"] },
         },
 
-        // Rapports et statistiques - Chef Service
+        // Rapports et statistiques - Superviseur
         {
           path: "rapports",
           name: "rapports",
           component: () => import("@/views/reports/ReportsView.vue"),
-          meta: { roles: ["CHEF_SERVICE", "ADMIN"] },
+          meta: { roles: ["SUPERVISEUR", "ADMIN"] },
         },
         {
           path: "statistiques",
           name: "statistiques",
           component: () => import("@/views/reports/StatistiquesView.vue"),
-          meta: { roles: ["CHEF_SERVICE", "ADMIN"] },
+          meta: { roles: ["SUPERVISEUR", "ADMIN"] },
         },
 
         // Administration - Admin

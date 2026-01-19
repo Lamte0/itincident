@@ -278,7 +278,7 @@ onMounted(() => {
               <th
                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                Maintenancier
+                Technicien
               </th>
               <th
                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -336,7 +336,7 @@ onMounted(() => {
                   v-if="incident.statut === 'CLOTURE'"
                   @click="downloadFicheIntervention(incident.id)"
                   :disabled="loading"
-                  class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50"
+                  class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-black bg-primary-600 hover:bg-primary-700 disabled:opacity-50"
                 >
                   <DocumentArrowDownIcon class="h-4 w-4 mr-1" />
                   Fiche PDF
@@ -363,7 +363,7 @@ onMounted(() => {
         </li>
         <li>
           Chaque fiche contient : les informations de l'incident, le rapport
-          d'intervention du maintenancier, et la validation de l'utilisateur.
+          d'intervention du technicien, et la validation de l'agent.
         </li>
         <li>
           L'export Excel permet d'analyser les données dans un tableur pour des

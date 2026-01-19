@@ -283,8 +283,8 @@ async function fetchStatistiques() {
 
   try {
     const response = await reportService.getStatistiques({
-      date_debut: filters.value.date_debut,
-      date_fin: filters.value.date_fin,
+      date_debut: filters.value.date_debut || "",
+      date_fin: filters.value.date_fin || "",
     });
     statistiques.value = response.data;
     // Force le re-render des graphiques
