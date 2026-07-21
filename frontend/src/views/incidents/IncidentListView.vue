@@ -58,24 +58,24 @@ const statutOptions = [
 
 function getStatutBadge(statut: string) {
   const badges: Record<string, string> = {
-    OUVERT: "bg-red-100 text-red-800",
-    AFFECTE: "bg-blue-100 text-blue-800",
-    EN_COURS: "bg-yellow-100 text-yellow-800",
-    RESOLU: "bg-green-100 text-green-800",
-    EN_ATTENTE_VALIDATION: "bg-purple-100 text-purple-800",
-    CLOTURE: "bg-gray-100 text-gray-800",
+    OUVERT: "bg-red-50 text-red-700 border border-red-100",
+    AFFECTE: "bg-blue-50 text-blue-700 border border-blue-100",
+    EN_COURS: "bg-amber-50 text-amber-700 border border-amber-100",
+    RESOLU: "bg-emerald-50 text-emerald-700 border border-emerald-100",
+    EN_ATTENTE_VALIDATION: "bg-purple-50 text-purple-700 border border-purple-100",
+    CLOTURE: "bg-slate-100 text-slate-700 border border-slate-200",
   };
-  return badges[statut] || "bg-gray-100 text-gray-800";
+  return badges[statut] || "bg-slate-100 text-slate-700 border border-slate-200";
 }
 
 function getPrioriteBadge(priorite: string) {
   const badges: Record<string, string> = {
-    BASSE: "bg-green-100 text-green-800",
-    MOYENNE: "bg-yellow-100 text-yellow-800",
-    HAUTE: "bg-orange-100 text-orange-800",
-    CRITIQUE: "bg-red-100 text-red-800",
+    BASSE: "bg-green-50 text-green-700 border border-green-100",
+    MOYENNE: "bg-yellow-50 text-yellow-700 border border-yellow-100",
+    HAUTE: "bg-orange-50 text-orange-700 border border-orange-100",
+    CRITIQUE: "bg-red-50 text-red-700 border border-red-100",
   };
-  return badges[priorite] || "bg-gray-100 text-gray-800";
+  return badges[priorite] || "bg-slate-100 text-slate-700 border border-slate-200";
 }
 
 function applyFilters() {
@@ -99,19 +99,6 @@ async function loadMaintenanciers() {
   } catch (err) {
     console.error("Erreur lors du chargement des maintenanciers", err);
   }
-}
-
-function openAffectationModal(incident: Incident) {
-  selectedIncident.value = incident;
-  affectationForm.value = { maintenancier_id: 0, instructions: "" };
-  affectationError.value = null;
-  showAffectationModal.value = true;
-}
-
-function closeAffectationModal() {
-  showAffectationModal.value = false;
-  selectedIncident.value = null;
-  affectationForm.value = { maintenancier_id: 0, instructions: "" };
 }
 
 async function affecterIncident() {
@@ -162,6 +149,19 @@ function canAffecter(incident: Incident): boolean {
   );
 }
 
+function openAffectationModal(incident: Incident) {
+  selectedIncident.value = incident;
+  affectationForm.value = { maintenancier_id: 0, instructions: "" };
+  affectationError.value = null;
+  showAffectationModal.value = true;
+}
+
+function closeAffectationModal() {
+  showAffectationModal.value = false;
+  selectedIncident.value = null;
+  affectationForm.value = { maintenancier_id: 0, instructions: "" };
+}
+
 onMounted(() => {
   incidentStore.fetchIncidents();
   // Charger les maintenanciers si l'utilisateur peut affecter
@@ -172,143 +172,114 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
+  <div class="space-y-6">
     <!-- Message de succès d'affectation -->
-    <div v-if="affectationSuccess" class="mb-4 rounded-md bg-green-50 p-4">
-      <div class="flex">
-        <div class="flex-shrink-0">
-          <svg
-            class="h-5 w-5 text-green-400"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-              clip-rule="evenodd"
-            />
+    <div v-if="affectationSuccess" class="rounded-2xl bg-green-50 border border-green-100 p-4 shadow-sm animate-fade-in-up">
+      <div class="flex items-center gap-3">
+        <div class="flex-shrink-0 text-green-500">
+          <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
           </svg>
         </div>
-        <div class="ml-3">
-          <p class="text-sm font-medium text-green-800">
-            {{ affectationSuccess }}
-          </p>
-        </div>
-        <div class="ml-auto pl-3">
-          <button
-            @click="affectationSuccess = null"
-            class="inline-flex text-green-500 hover:text-green-600"
-          >
-            <XMarkIcon class="h-5 w-5" />
-          </button>
-        </div>
+        <p class="text-sm font-semibold text-green-800 flex-grow">
+          {{ affectationSuccess }}
+        </p>
+        <button
+          @click="affectationSuccess = null"
+          class="text-green-500 hover:text-green-700 transition-colors"
+        >
+          <XMarkIcon class="h-5 w-5" />
+        </button>
       </div>
     </div>
 
-    <div class="sm:flex sm:items-center sm:justify-between mb-6">
-      <div>
-        <h1 class="text-2xl font-bold text-gray-900">Tous les Incidents</h1>
-        <p class="mt-1 text-sm text-gray-500">
-          Liste complète des incidents déclarés
+    <!-- Page Header -->
+    <div class="sm:flex sm:items-center sm:justify-between gap-4">
+      <div class="space-y-1">
+        <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Tous les Incidents</h1>
+        <p class="text-sm text-slate-500">
+          Consultez et gérez la liste complète des déclarations d'incidents informatiques.
         </p>
       </div>
-      <div class="mt-4 sm:mt-0">
+      <div class="flex-shrink-0">
         <RouterLink
           to="/incidents/nouveau"
-          class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
+          class="inline-flex items-center justify-center px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold rounded-2xl shadow-lg shadow-indigo-500/10 hover:shadow-indigo-500/20 hover:from-indigo-700 hover:to-violet-700 transition-all duration-200 text-sm hover:-translate-y-0.5"
         >
           <PlusIcon class="h-5 w-5 mr-2" />
-          Nouvel incident
+          Déclarer un incident
         </RouterLink>
       </div>
     </div>
 
-    <!-- Filtres -->
-    <div class="bg-white shadow rounded-lg mb-6 p-4">
-      <div class="flex items-center justify-between">
-        <div class="flex-1 max-w-lg">
-          <div class="relative">
-            <MagnifyingGlassIcon
-              class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
-            />
-            <input
-              v-model="searchQuery"
-              type="text"
-              placeholder="Rechercher par référence, titre..."
-              class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-            />
-          </div>
+    <!-- Filters Section -->
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm space-y-4">
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+        <div class="flex-grow relative">
+          <MagnifyingGlassIcon class="absolute left-3.5 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Rechercher par référence, titre..."
+            class="block w-full pl-11 pr-4 py-2.5 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 focus:bg-white transition-all text-sm"
+          />
         </div>
         <button
           @click="showFilters = !showFilters"
-          class="ml-4 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+          class="inline-flex items-center justify-center px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all gap-2"
         >
-          <FunnelIcon class="h-5 w-5 mr-2" />
+          <FunnelIcon class="h-4 w-4" />
           Filtres
         </button>
       </div>
 
       <div
         v-if="showFilters"
-        class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-4"
+        class="pt-4 border-t border-slate-100 grid grid-cols-1 gap-4 sm:grid-cols-4"
       >
         <div>
-          <label class="block text-sm font-medium text-gray-700">Type</label>
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Type</label>
           <select
             v-model="incidentStore.filters.type"
-            class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md"
+            class="block w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all"
           >
-            <option
-              v-for="opt in typeOptions"
-              :key="opt.value"
-              :value="opt.value"
-            >
+            <option v-for="opt in typeOptions" :key="opt.value" :value="opt.value">
               {{ opt.label }}
             </option>
           </select>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700"
-            >Priorité</label
-          >
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Priorité</label>
           <select
             v-model="incidentStore.filters.priorite"
-            class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md"
+            class="block w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all"
           >
-            <option
-              v-for="opt in prioriteOptions"
-              :key="opt.value"
-              :value="opt.value"
-            >
+            <option v-for="opt in prioriteOptions" :key="opt.value" :value="opt.value">
               {{ opt.label }}
             </option>
           </select>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700">Statut</label>
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Statut</label>
           <select
             v-model="incidentStore.filters.statut"
-            class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md"
+            class="block w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all"
           >
-            <option
-              v-for="opt in statutOptions"
-              :key="opt.value"
-              :value="opt.value"
-            >
+            <option v-for="opt in statutOptions" :key="opt.value" :value="opt.value">
               {{ opt.label }}
             </option>
           </select>
         </div>
-        <div class="flex items-end space-x-2">
+        <div class="flex items-end gap-2">
           <button
             @click="applyFilters"
-            class="px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-md hover:bg-primary-700"
+            class="flex-grow px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl shadow-sm transition-colors"
           >
             Appliquer
           </button>
           <button
             @click="clearFilters"
-            class="px-4 py-2 bg-gray-200 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-300"
+            class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold rounded-xl transition-colors"
           >
             Réinitialiser
           </button>
@@ -317,160 +288,112 @@ onMounted(() => {
     </div>
 
     <!-- Loading -->
-    <div v-if="incidentStore.loading" class="flex justify-center py-12">
-      <div
-        class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"
-      ></div>
+    <div v-if="incidentStore.loading" class="flex justify-center py-16">
+      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
     </div>
 
-    <!-- Liste des incidents -->
-    <div v-else class="bg-white shadow overflow-hidden rounded-lg">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-          <tr>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+    <!-- Data Table Container -->
+    <div v-else class="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-slate-100">
+          <thead class="bg-slate-50/80">
+            <tr>
+              <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Référence</th>
+              <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Titre</th>
+              <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Type</th>
+              <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Priorité</th>
+              <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Statut</th>
+              <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Auteur</th>
+              <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Date</th>
+              <th class="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 bg-white">
+            <tr v-if="incidentStore.incidents.length === 0">
+              <td colspan="8" class="px-6 py-12 text-center text-slate-400 text-sm">
+                Aucun incident trouvé
+              </td>
+            </tr>
+            <tr
+              v-for="incident in incidentStore.incidents"
+              :key="incident.id"
+              class="hover:bg-slate-50/40 transition-colors"
             >
-              Référence
-            </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Titre
-            </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Type
-            </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Priorité
-            </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Statut
-            </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Auteur
-            </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Date
-            </th>
-            <th
-              class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-if="incidentStore.incidents.length === 0">
-            <td colspan="8" class="px-6 py-12 text-center text-gray-500">
-              Aucun incident trouvé
-            </td>
-          </tr>
-          <tr
-            v-for="incident in incidentStore.incidents"
-            :key="incident.id"
-            class="hover:bg-gray-50"
-          >
-            <td
-              class="px-6 py-4 whitespace-nowrap text-sm font-medium text-primary-600"
-            >
-              {{ incident.reference }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              {{ incident.titre }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {{ incident.type }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span
-                :class="[
-                  'px-2 inline-flex text-xs leading-5 font-semibold rounded-full',
-                  getPrioriteBadge(incident.priorite),
-                ]"
-              >
-                {{ incident.priorite }}
-              </span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span
-                :class="[
-                  'px-2 inline-flex text-xs leading-5 font-semibold rounded-full',
-                  getStatutBadge(incident.statut),
-                ]"
-              >
-                {{ incident.statut.replace("_", " ") }}
-              </span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {{ incident.auteur?.name }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {{ new Date(incident.created_at).toLocaleDateString("fr-FR") }}
-            </td>
-            <td
-              class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
-            >
-              <div class="flex items-center justify-end space-x-2">
-                <RouterLink
-                  :to="`/incidents/${incident.id}`"
-                  class="text-primary-600 hover:text-primary-900"
-                  title="Voir détails"
-                >
-                  <EyeIcon class="h-5 w-5" />
-                </RouterLink>
-                <button
-                  v-if="canAffecter(incident)"
-                  @click="openAffectationModal(incident)"
-                  class="text-green-600 hover:text-green-900"
-                  title="Affecter à un maintenancier"
-                >
-                  <PaperAirplaneIcon class="h-5 w-5" />
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-indigo-600">
+                {{ incident.reference }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-800 font-medium">
+                {{ incident.titre }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 font-medium">
+                {{ incident.type }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span :class="['px-2.5 py-1 text-xs font-bold rounded-lg', getPrioriteBadge(incident.priorite)]">
+                  {{ incident.priorite }}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span :class="['px-2.5 py-1 text-xs font-bold rounded-lg', getStatutBadge(incident.statut)]">
+                  {{ incident.statut.replace("_", " ") }}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 font-medium">
+                {{ incident.auteur?.name }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 font-medium">
+                {{ new Date(incident.created_at).toLocaleDateString("fr-FR") }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                <div class="flex items-center justify-end gap-2.5">
+                  <RouterLink
+                    :to="`/incidents/${incident.id}`"
+                    class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 rounded-lg p-1.5 transition-colors"
+                    title="Voir détails"
+                  >
+                    <EyeIcon class="h-4.5 w-4.5" />
+                  </RouterLink>
+                  <button
+                    v-if="canAffecter(incident)"
+                    @click="openAffectationModal(incident)"
+                    class="text-emerald-600 hover:text-emerald-900 bg-emerald-50 hover:bg-emerald-100 rounded-lg p-1.5 transition-colors"
+                    title="Affecter"
+                  >
+                    <PaperAirplaneIcon class="h-4.5 w-4.5" />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <!-- Pagination -->
       <div
         v-if="incidentStore.pagination.lastPage > 1"
-        class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6"
+        class="bg-slate-50/50 px-6 py-4 border-t border-slate-100 flex items-center justify-between gap-4 flex-wrap"
       >
-        <div class="flex items-center justify-between">
-          <div class="text-sm text-gray-700">
-            Page {{ incidentStore.pagination.currentPage }} sur
-            {{ incidentStore.pagination.lastPage }} ({{
-              incidentStore.pagination.total
-            }}
-            résultats)
-          </div>
-          <div class="flex space-x-2">
-            <button
-              v-for="page in incidentStore.pagination.lastPage"
-              :key="page"
-              @click="changePage(page)"
-              :class="[
-                'px-3 py-1 text-sm rounded',
-                page === incidentStore.pagination.currentPage
-                  ? 'bg-primary-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200',
-              ]"
-            >
-              {{ page }}
-            </button>
-          </div>
+        <div class="text-xs font-semibold text-slate-500">
+          Page {{ incidentStore.pagination.currentPage }} sur
+          {{ incidentStore.pagination.lastPage }} ({{
+            incidentStore.pagination.total
+          }}
+          résultats)
+        </div>
+        <div class="flex gap-1.5">
+          <button
+            v-for="page in incidentStore.pagination.lastPage"
+            :key="page"
+            @click="changePage(page)"
+            :class="[
+              'px-3 py-1.5 text-xs font-semibold rounded-lg transition-all',
+              page === incidentStore.pagination.currentPage
+                ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/25'
+                : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50',
+            ]"
+          >
+            {{ page }}
+          </button>
         </div>
       </div>
     </div>
@@ -478,102 +401,90 @@ onMounted(() => {
     <!-- Modal d'affectation -->
     <div
       v-if="showAffectationModal"
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+      class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in"
     >
-      <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
-        <div class="p-6">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-medium text-gray-900">
+      <div class="bg-white border border-slate-100 rounded-3xl shadow-2xl max-w-md w-full overflow-hidden animate-fade-in-up">
+        <div class="p-6 space-y-6">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-bold text-slate-800">
               Affecter l'incident
             </h3>
             <button
               @click="closeAffectationModal"
-              class="text-gray-400 hover:text-gray-500"
+              class="text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-full p-1 transition-colors"
             >
-              <XMarkIcon class="h-6 w-6" />
+              <XMarkIcon class="h-5 w-5" />
             </button>
           </div>
 
-          <div v-if="selectedIncident" class="mb-4 p-3 bg-gray-50 rounded-lg">
-            <p class="text-sm font-medium text-gray-900">
-              {{ selectedIncident.reference }}
-            </p>
-            <p class="text-sm text-gray-600">{{ selectedIncident.titre }}</p>
-            <div class="mt-1 flex items-center space-x-2">
-              <span
-                :class="[
-                  'px-2 py-0.5 text-xs font-medium rounded-full',
-                  getPrioriteBadge(selectedIncident.priorite),
-                ]"
-              >
+          <div v-if="selectedIncident" class="p-4 bg-slate-50 border border-slate-150 rounded-2xl space-y-2">
+            <p class="text-xs font-bold text-indigo-600">{{ selectedIncident.reference }}</p>
+            <p class="text-sm font-semibold text-slate-800">{{ selectedIncident.titre }}</p>
+            <div class="flex items-center gap-2">
+              <span :class="['px-2.5 py-0.5 text-[10px] font-bold rounded-md', getPrioriteBadge(selectedIncident.priorite)]">
                 {{ selectedIncident.priorite }}
               </span>
-              <span class="text-xs text-gray-500">
-                {{ selectedIncident.type }}
-              </span>
+              <span class="text-[10px] font-bold text-slate-400 uppercase">{{ selectedIncident.type }}</span>
             </div>
           </div>
 
           <!-- Erreur -->
           <div
             v-if="affectationError"
-            class="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm"
+            class="p-3 bg-red-50 border border-red-100 text-red-600 rounded-xl text-xs font-semibold"
           >
             {{ affectationError }}
           </div>
 
           <form @submit.prevent="affecterIncident" class="space-y-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                 Maintenancier *
               </label>
               <select
                 v-model="affectationForm.maintenancier_id"
                 required
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+                class="block w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 focus:bg-white transition-all"
               >
                 <option :value="0" disabled>
                   -- Sélectionner un maintenancier --
                 </option>
                 <option v-for="m in maintenanciers" :key="m.id" :value="m.id">
-                  {{ m.name }}
-                  <span v-if="m.service"> - {{ m.service }}</span>
+                  {{ m.name }} <span v-if="m.service">({{ m.service }})</span>
                 </option>
               </select>
               <p
                 v-if="maintenanciers.length === 0"
-                class="mt-1 text-sm text-yellow-600"
+                class="mt-1 text-xs text-amber-600 font-semibold"
               >
                 Aucun maintenancier disponible
               </p>
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                 Instructions (optionnel)
               </label>
               <textarea
                 v-model="affectationForm.instructions"
                 rows="3"
-                placeholder="Instructions spéciales pour le maintenancier..."
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+                placeholder="Instructions spéciales pour le technicien..."
+                class="block w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 focus:bg-white transition-all"
               ></textarea>
             </div>
 
-            <div class="flex justify-end space-x-3 pt-4">
+            <div class="flex justify-end gap-2 pt-4">
               <button
                 type="button"
                 @click="closeAffectationModal"
-                class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+                class="px-4 py-2.5 text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
               >
                 Annuler
               </button>
               <button
                 type="submit"
-                :disabled="
-                  affectationLoading || !affectationForm.maintenancier_id
-                "
-                class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                :disabled="affectationLoading || !affectationForm.maintenancier_id"
+                class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl transition-colors shadow-sm shadow-indigo-600/10"
               >
                 <span v-if="affectationLoading">Affectation...</span>
                 <span v-else>Affecter</span>

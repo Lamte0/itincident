@@ -283,8 +283,8 @@ async function fetchStatistiques() {
 
   try {
     const response = await reportService.getStatistiques({
-      date_debut: filters.value.date_debut,
-      date_fin: filters.value.date_fin,
+      date_debut: filters.value.date_debut || "",
+      date_fin: filters.value.date_fin || "",
     });
     statistiques.value = response.data;
     // Force le re-render des graphiques
@@ -304,41 +304,37 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
-    <div class="mb-6">
-      <h1 class="text-2xl font-bold text-gray-900">Statistiques</h1>
-      <p class="mt-1 text-sm text-gray-500">
-        Restitutions et analyses des incidents sur période
+  <div class="space-y-6">
+    <div class="space-y-1">
+      <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Statistiques</h1>
+      <p class="text-sm text-slate-500">
+        Restitutions et analyses des incidents sur la période sélectionnée.
       </p>
     </div>
 
     <!-- Filtres de période -->
-    <div class="bg-white shadow rounded-lg p-4 mb-6">
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm">
       <div class="flex flex-wrap items-end gap-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700"
-            >Date de début</label
-          >
+        <div class="space-y-1.5">
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Date de début</label>
           <input
             v-model="filters.date_debut"
             type="date"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+            class="block w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 focus:bg-white transition-all"
           />
         </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700"
-            >Date de fin</label
-          >
+        <div class="space-y-1.5">
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Date de fin</label>
           <input
             v-model="filters.date_fin"
             type="date"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+            class="block w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 focus:bg-white transition-all"
           />
         </div>
         <button
           @click="fetchStatistiques"
           :disabled="loading"
-          class="px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-md hover:bg-primary-700 disabled:opacity-50"
+          class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-sm transition-colors disabled:opacity-50 h-[38px] flex items-center justify-center shadow-sm shadow-indigo-600/10"
         >
           <span v-if="loading">Chargement...</span>
           <span v-else>Actualiser</span>
@@ -347,101 +343,89 @@ onMounted(() => {
     </div>
 
     <!-- Loading -->
-    <div v-if="loading" class="flex justify-center py-12">
-      <div
-        class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"
-      ></div>
+    <div v-if="loading" class="flex justify-center py-16">
+      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
     </div>
 
     <!-- Error -->
     <div
       v-else-if="error"
-      class="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700"
+      class="bg-red-50 border border-red-100 rounded-2xl p-4 text-red-650 text-sm font-semibold animate-fade-in-up"
     >
       {{ error }}
     </div>
 
     <template v-else-if="statistiques">
       <!-- Cartes de synthèse -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- Total incidents -->
-        <div class="bg-white shadow rounded-lg p-6">
-          <div class="flex items-center">
-            <div class="flex-shrink-0 p-3 bg-primary-100 rounded-lg">
-              <ExclamationTriangleIcon class="h-6 w-6 text-primary-600" />
-            </div>
-            <div class="ml-4">
-              <p class="text-sm font-medium text-gray-500">Total Incidents</p>
-              <p class="text-2xl font-bold text-gray-900">
-                {{ statistiques.total_incidents }}
-              </p>
-            </div>
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm flex items-center gap-4">
+          <div class="flex-shrink-0 p-3 bg-red-50 text-red-600 border border-red-100 rounded-xl">
+            <ExclamationTriangleIcon class="h-6 w-6" />
+          </div>
+          <div>
+            <p class="text-xs font-bold text-slate-450 uppercase tracking-wider">Total Incidents</p>
+            <p class="text-2xl font-extrabold text-slate-800 mt-0.5">
+              {{ statistiques.total_incidents }}
+            </p>
           </div>
         </div>
 
         <!-- Temps moyen de résolution -->
-        <div class="bg-white shadow rounded-lg p-6">
-          <div class="flex items-center">
-            <div class="flex-shrink-0 p-3 bg-blue-100 rounded-lg">
-              <ClockIcon class="h-6 w-6 text-blue-600" />
-            </div>
-            <div class="ml-4">
-              <p class="text-sm font-medium text-gray-500">
-                Temps moyen résolution
-              </p>
-              <p class="text-2xl font-bold text-gray-900">
-                {{ formatTemps(statistiques.temps_moyen_resolution) }}
-              </p>
-            </div>
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm flex items-center gap-4">
+          <div class="flex-shrink-0 p-3 bg-blue-50 text-blue-600 border border-blue-100 rounded-xl">
+            <ClockIcon class="h-6 w-6" />
+          </div>
+          <div>
+            <p class="text-xs font-bold text-slate-450 uppercase tracking-wider">Temps moyen résol.</p>
+            <p class="text-2xl font-extrabold text-slate-800 mt-0.5">
+              {{ formatTemps(statistiques.temps_moyen_resolution) }}
+            </p>
           </div>
         </div>
 
         <!-- Note moyenne -->
-        <div class="bg-white shadow rounded-lg p-6">
-          <div class="flex items-center">
-            <div class="flex-shrink-0 p-3 bg-yellow-100 rounded-lg">
-              <StarIcon class="h-6 w-6 text-yellow-600" />
-            </div>
-            <div class="ml-4">
-              <p class="text-sm font-medium text-gray-500">Note moyenne</p>
-              <p class="text-2xl font-bold text-gray-900">
-                {{ statistiques.note_moyenne.toFixed(1) }} / 5
-              </p>
-            </div>
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm flex items-center gap-4">
+          <div class="flex-shrink-0 p-3 bg-amber-50 text-amber-600 border border-amber-100 rounded-xl">
+            <StarIcon class="h-6 w-6" />
+          </div>
+          <div>
+            <p class="text-xs font-bold text-slate-450 uppercase tracking-wider">Note moyenne</p>
+            <p class="text-2xl font-extrabold text-slate-800 mt-0.5">
+              {{ statistiques.note_moyenne.toFixed(1) }} <span class="text-slate-400 text-sm font-semibold">/ 5</span>
+            </p>
           </div>
         </div>
 
         <!-- Taux de clôture -->
-        <div class="bg-white shadow rounded-lg p-6">
-          <div class="flex items-center">
-            <div class="flex-shrink-0 p-3 bg-green-100 rounded-lg">
-              <CheckCircleIcon class="h-6 w-6 text-green-600" />
-            </div>
-            <div class="ml-4">
-              <p class="text-sm font-medium text-gray-500">Taux de clôture</p>
-              <p class="text-2xl font-bold text-gray-900">
-                {{
-                  statistiques.total_incidents > 0
-                    ? Math.round(
-                        ((statistiques.incidents_par_statut.CLOTURE || 0) /
-                          statistiques.total_incidents) *
-                          100
-                      )
-                    : 0
-                }}%
-              </p>
-            </div>
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm flex items-center gap-4">
+          <div class="flex-shrink-0 p-3 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-xl">
+            <CheckCircleIcon class="h-6 w-6" />
+          </div>
+          <div>
+            <p class="text-xs font-bold text-slate-450 uppercase tracking-wider">Taux de clôture</p>
+            <p class="text-2xl font-extrabold text-slate-800 mt-0.5">
+              {{
+                statistiques.total_incidents > 0
+                  ? Math.round(
+                      ((statistiques.incidents_par_statut.CLOTURE || 0) /
+                        statistiques.total_incidents) *
+                        100
+                    )
+                  : 0
+              }}%
+            </p>
           </div>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Graphique Doughnut - Répartition par statut -->
-        <div class="bg-white shadow rounded-lg p-6">
-          <h2 class="text-lg font-medium text-gray-900 mb-4">
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm">
+          <h2 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 pb-2 border-b border-slate-100">
             Répartition par statut
           </h2>
-          <div class="h-64">
+          <div class="h-64 relative">
             <Doughnut
               :key="'statut-' + chartKey"
               :data="statutChartData"
@@ -451,8 +435,8 @@ onMounted(() => {
         </div>
 
         <!-- Graphique Bar - Répartition par type -->
-        <div class="bg-white shadow rounded-lg p-6">
-          <h2 class="text-lg font-medium text-gray-900 mb-4">
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm">
+          <h2 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 pb-2 border-b border-slate-100">
             Répartition par type
           </h2>
           <div class="h-64">
@@ -465,10 +449,10 @@ onMounted(() => {
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Graphique Bar horizontal - Répartition par priorité -->
-        <div class="bg-white shadow rounded-lg p-6">
-          <h2 class="text-lg font-medium text-gray-900 mb-4">
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm">
+          <h2 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 pb-2 border-b border-slate-100">
             Répartition par priorité
           </h2>
           <div class="h-64">
@@ -481,12 +465,10 @@ onMounted(() => {
         </div>
 
         <!-- Graphique Line - Évolution sur la période -->
-        <div class="bg-white shadow rounded-lg p-6">
-          <h2 class="text-lg font-medium text-gray-900 mb-4">
-            <div class="flex items-center">
-              <ArrowTrendingUpIcon class="h-5 w-5 mr-2 text-gray-400" />
-              Évolution sur la période
-            </div>
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm">
+          <h2 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
+            <ArrowTrendingUpIcon class="h-4.5 w-4.5 text-slate-400" />
+            Évolution sur la période
           </h2>
           <div v-if="statistiques.incidents_par_jour?.length" class="h-64">
             <Line
@@ -497,27 +479,27 @@ onMounted(() => {
           </div>
           <div
             v-else
-            class="flex items-center justify-center h-64 text-gray-500"
+            class="flex items-center justify-center h-64 text-slate-450 text-sm font-semibold"
           >
-            Aucune donnée sur cette période
+            Aucune donnée sur cette période.
           </div>
         </div>
       </div>
 
       <!-- Détail par statut (barres de progression) -->
-      <div class="bg-white shadow rounded-lg p-6 mb-6">
-        <h2 class="text-lg font-medium text-gray-900 mb-4">
+      <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm space-y-4">
+        <h2 class="text-sm font-bold text-slate-500 uppercase tracking-wider pb-2 border-b border-slate-100">
           Détail par statut
         </h2>
-        <div class="space-y-4">
-          <div v-for="item in totalParStatut" :key="item.label">
-            <div class="flex justify-between text-sm mb-1">
-              <span class="text-gray-600">{{ item.label }}</span>
-              <span class="font-medium text-gray-900">{{ item.value }}</span>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
+          <div v-for="item in totalParStatut" :key="item.label" class="space-y-1">
+            <div class="flex justify-between text-sm">
+              <span class="text-slate-550 font-semibold">{{ item.label }}</span>
+              <span class="font-bold text-slate-800">{{ item.value }}</span>
             </div>
-            <div class="w-full bg-gray-200 rounded-full h-2.5">
+            <div class="w-full bg-slate-100 rounded-full h-2">
               <div
-                :class="[item.color, 'h-2.5 rounded-full transition-all']"
+                :class="[item.color, 'h-2 rounded-full transition-all']"
                 :style="{
                   width: `${
                     statistiques.total_incidents > 0
@@ -532,86 +514,84 @@ onMounted(() => {
       </div>
 
       <!-- Tableau récapitulatif -->
-      <div class="bg-white shadow rounded-lg p-6">
-        <h2 class="text-lg font-medium text-gray-900 mb-4">
-          <div class="flex items-center">
-            <ChartBarIcon class="h-5 w-5 mr-2 text-gray-400" />
-            Récapitulatif de la période
-          </div>
+      <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm space-y-4">
+        <h2 class="text-sm font-bold text-slate-500 uppercase tracking-wider pb-2 border-b border-slate-100 flex items-center gap-2">
+          <ChartBarIcon class="h-4.5 w-4.5 text-slate-400" />
+          Récapitulatif de la période
         </h2>
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
+        <div class="overflow-x-auto border border-slate-150 rounded-2xl overflow-hidden">
+          <table class="min-w-full divide-y divide-slate-200">
+            <thead class="bg-slate-50/75">
               <tr>
                 <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  class="px-6 py-3.5 text-left text-xs font-bold text-slate-450 uppercase tracking-wider"
                 >
                   Indicateur
                 </th>
                 <th
-                  class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  class="px-6 py-3.5 text-right text-xs font-bold text-slate-450 uppercase tracking-wider"
                 >
                   Valeur
                 </th>
               </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            <tbody class="bg-white divide-y divide-slate-100">
+              <tr class="hover:bg-slate-50/50 transition-colors">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700 font-semibold">
                   Nombre total d'incidents
                 </td>
                 <td
-                  class="px-6 py-4 whitespace-nowrap text-sm text-right font-medium"
+                  class="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-slate-800"
                 >
                   {{ statistiques.total_incidents }}
                 </td>
               </tr>
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <tr class="hover:bg-slate-50/50 transition-colors">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700 font-semibold">
                   Incidents clôturés
                 </td>
                 <td
-                  class="px-6 py-4 whitespace-nowrap text-sm text-right font-medium text-green-600"
+                  class="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-emerald-600"
                 >
                   {{ statistiques.incidents_par_statut.CLOTURE || 0 }}
                 </td>
               </tr>
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <tr class="hover:bg-slate-50/50 transition-colors">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700 font-semibold">
                   Incidents en cours
                 </td>
                 <td
-                  class="px-6 py-4 whitespace-nowrap text-sm text-right font-medium text-yellow-600"
+                  class="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-amber-600"
                 >
                   {{ statistiques.incidents_par_statut.EN_COURS || 0 }}
                 </td>
               </tr>
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <tr class="hover:bg-slate-50/50 transition-colors">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700 font-semibold">
                   Incidents ouverts (non affectés)
                 </td>
                 <td
-                  class="px-6 py-4 whitespace-nowrap text-sm text-right font-medium text-red-600"
+                  class="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-red-650"
                 >
                   {{ statistiques.incidents_par_statut.OUVERT || 0 }}
                 </td>
               </tr>
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <tr class="hover:bg-slate-50/50 transition-colors">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700 font-semibold">
                   Temps moyen de résolution
                 </td>
                 <td
-                  class="px-6 py-4 whitespace-nowrap text-sm text-right font-medium"
+                  class="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-slate-800"
                 >
                   {{ formatTemps(statistiques.temps_moyen_resolution) }}
                 </td>
               </tr>
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <tr class="hover:bg-slate-50/50 transition-colors">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700 font-semibold">
                   Note moyenne de satisfaction
                 </td>
                 <td
-                  class="px-6 py-4 whitespace-nowrap text-sm text-right font-medium"
+                  class="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-slate-850"
                 >
                   {{ statistiques.note_moyenne.toFixed(2) }} / 5
                 </td>

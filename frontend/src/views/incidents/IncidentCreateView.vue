@@ -105,26 +105,26 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <div class="max-w-3xl mx-auto">
-    <div class="mb-6">
-      <h1 class="text-2xl font-bold text-gray-900">Déclarer un incident</h1>
-      <p class="mt-1 text-sm text-gray-500">
-        Remplissez ce formulaire pour signaler un problème informatique
+  <div class="max-w-3xl mx-auto space-y-6">
+    <div class="space-y-1">
+      <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Déclarer un incident</h1>
+      <p class="text-sm text-slate-500">
+        Remplissez ce formulaire pour signaler un problème informatique rencontré.
       </p>
     </div>
 
     <form @submit.prevent="handleSubmit" class="space-y-6">
       <div
         v-if="errorMessage"
-        class="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded"
+        class="bg-red-50 border border-red-100 text-red-600 p-4 rounded-2xl text-sm font-semibold animate-fade-in-up"
       >
         {{ errorMessage }}
       </div>
 
-      <div class="bg-white shadow rounded-lg p-6 space-y-6">
+      <div class="bg-white border border-slate-200/80 rounded-2xl p-6 md:p-8 shadow-sm space-y-6">
         <!-- Titre -->
-        <div>
-          <label for="titre" class="block text-sm font-medium text-gray-700">
+        <div class="space-y-1.5">
+          <label for="titre" class="block text-xs font-bold text-slate-500 uppercase tracking-wider">
             Titre de l'incident *
           </label>
           <input
@@ -133,24 +133,24 @@ async function handleSubmit() {
             type="text"
             required
             placeholder="Ex: Impossible d'accéder à l'application X"
-            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+            class="block w-full rounded-xl border border-slate-200 bg-slate-50/55 px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 focus:bg-white transition-all"
           />
         </div>
 
         <!-- Type -->
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">
+        <div class="space-y-2">
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">
             Type d'incident *
           </label>
-          <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <label
               v-for="option in typeOptions"
               :key="option.value"
               :class="[
-                'relative flex cursor-pointer rounded-lg border p-4 focus:outline-none',
+                'relative flex cursor-pointer rounded-2xl border p-4 focus:outline-none transition-all duration-200',
                 form.type === option.value
-                  ? 'border-primary-500 ring-2 ring-primary-500'
-                  : 'border-gray-300',
+                  ? 'border-indigo-600 bg-indigo-50/30 ring-2 ring-indigo-500/10'
+                  : 'border-slate-200 hover:border-slate-350 hover:bg-slate-50/30',
               ]"
             >
               <input
@@ -161,10 +161,10 @@ async function handleSubmit() {
                 class="sr-only"
               />
               <div class="flex flex-1 flex-col">
-                <span class="block text-sm font-medium text-gray-900">
+                <span class="block text-sm font-bold text-slate-800">
                   {{ option.label }}
                 </span>
-                <span class="mt-1 text-xs text-gray-500">
+                <span class="mt-1 text-xs text-slate-500 leading-normal">
                   {{ option.description }}
                 </span>
               </div>
@@ -173,8 +173,8 @@ async function handleSubmit() {
         </div>
 
         <!-- Priorité -->
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">
+        <div class="space-y-2">
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">
             Niveau de priorité *
           </label>
           <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -182,10 +182,10 @@ async function handleSubmit() {
               v-for="option in prioriteOptions"
               :key="option.value"
               :class="[
-                'relative flex cursor-pointer rounded-lg border p-3 focus:outline-none',
+                'relative flex cursor-pointer rounded-2xl border p-3.5 focus:outline-none justify-center text-center transition-all duration-200',
                 form.priorite === option.value
-                  ? 'border-primary-500 ring-2 ring-primary-500'
-                  : 'border-gray-300',
+                  ? 'border-indigo-600 bg-indigo-50/30 ring-2 ring-indigo-500/10'
+                  : 'border-slate-200 hover:border-slate-350 hover:bg-slate-50/30',
               ]"
             >
               <input
@@ -195,8 +195,8 @@ async function handleSubmit() {
                 :value="option.value"
                 class="sr-only"
               />
-              <div class="flex flex-1 flex-col">
-                <span class="block text-sm font-medium text-gray-900">
+              <div class="flex flex-1 flex-col items-center justify-center">
+                <span class="block text-sm font-bold text-slate-800">
                   {{ option.label }}
                 </span>
               </div>
@@ -205,10 +205,10 @@ async function handleSubmit() {
         </div>
 
         <!-- Description -->
-        <div>
+        <div class="space-y-1.5">
           <label
             for="description"
-            class="block text-sm font-medium text-gray-700"
+            class="block text-xs font-bold text-slate-500 uppercase tracking-wider"
           >
             Description détaillée *
           </label>
@@ -217,56 +217,57 @@ async function handleSubmit() {
             v-model="form.description"
             rows="4"
             required
-            placeholder="Décrivez le problème en détail..."
-            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+            placeholder="Décrivez le problème en détail pour aider à sa résolution..."
+            class="block w-full rounded-xl border border-slate-200 bg-slate-50/55 px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 focus:bg-white transition-all"
           ></textarea>
         </div>
 
-        <!-- Lieu -->
-        <div>
-          <label for="lieu" class="block text-sm font-medium text-gray-700">
-            Localisation
-          </label>
-          <input
-            id="lieu"
-            v-model="form.lieu"
-            type="text"
-            placeholder="Ex: Bureau 205, Bâtiment A"
-            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-          />
-        </div>
+        <!-- Lieu et Equipement -->
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div class="space-y-1.5">
+            <label for="lieu" class="block text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Localisation
+            </label>
+            <input
+              id="lieu"
+              v-model="form.lieu"
+              type="text"
+              placeholder="Ex: Bureau 205, Bâtiment A"
+              class="block w-full rounded-xl border border-slate-200 bg-slate-50/55 px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 focus:bg-white transition-all"
+            />
+          </div>
 
-        <!-- Équipement -->
-        <div>
-          <label
-            for="equipement"
-            class="block text-sm font-medium text-gray-700"
-          >
-            Équipement concerné
-          </label>
-          <input
-            id="equipement"
-            v-model="form.equipement"
-            type="text"
-            placeholder="Ex: PC-12345, Imprimante HP LaserJet"
-            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-          />
+          <div class="space-y-1.5">
+            <label
+              for="equipement"
+              class="block text-xs font-bold text-slate-500 uppercase tracking-wider"
+            >
+              Équipement concerné
+            </label>
+            <input
+              id="equipement"
+              v-model="form.equipement"
+              type="text"
+              placeholder="Ex: PC-12345, Imprimante HP LaserJet"
+              class="block w-full rounded-xl border border-slate-200 bg-slate-50/55 px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 focus:bg-white transition-all"
+            />
+          </div>
         </div>
 
         <!-- Images -->
-        <div>
-          <label class="block text-sm font-medium text-gray-700">
+        <div class="space-y-2">
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">
             Images / Captures d'écran
           </label>
           <div
-            class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md"
+            class="flex justify-center px-6 pt-5 pb-6 border-2 border-slate-250 border-dashed rounded-2xl bg-slate-50/20 hover:bg-slate-50/60 transition-colors"
           >
-            <div class="space-y-1 text-center">
-              <PhotoIcon class="mx-auto h-12 w-12 text-gray-400" />
-              <div class="flex text-sm text-gray-600">
+            <div class="space-y-2 text-center">
+              <PhotoIcon class="mx-auto h-12 w-12 text-slate-400" />
+              <div class="flex text-sm text-slate-600 justify-center">
                 <label
                   for="images"
-                  class="relative cursor-pointer bg-white rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none"
+                  class="relative cursor-pointer bg-transparent rounded-md font-semibold text-indigo-650 hover:text-indigo-800 focus-within:outline-none"
                 >
                   <span>Télécharger des images</span>
                   <input
@@ -279,9 +280,9 @@ async function handleSubmit() {
                     @change="handleImageUpload"
                   />
                 </label>
-                <p class="pl-1">ou glisser-déposer</p>
+                <p class="pl-1 text-slate-500">ou glisser-déposer</p>
               </div>
-              <p class="text-xs text-gray-500">PNG, JPG, GIF jusqu'à 10MB</p>
+              <p class="text-xs text-slate-400">PNG, JPG, GIF jusqu'à 10MB</p>
             </div>
           </div>
 
@@ -293,15 +294,15 @@ async function handleSubmit() {
             <div
               v-for="(preview, index) in imagesPreviews"
               :key="index"
-              class="relative"
+              class="relative rounded-xl overflow-hidden border border-slate-200 shadow-sm"
             >
-              <img :src="preview" class="h-24 w-full object-cover rounded-lg" />
+              <img :src="preview" class="h-24 w-full object-cover" />
               <button
                 type="button"
                 @click="removeImage(index)"
-                class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1"
+                class="absolute top-1.5 right-1.5 bg-slate-900/60 text-white rounded-full p-1 hover:bg-slate-900 transition-colors"
               >
-                <XMarkIcon class="h-4 w-4" />
+                <XMarkIcon class="h-3.5 w-3.5" />
               </button>
             </div>
           </div>
@@ -309,18 +310,18 @@ async function handleSubmit() {
       </div>
 
       <!-- Actions -->
-      <div class="flex justify-end space-x-3">
+      <div class="flex justify-end gap-3">
         <button
           type="button"
           @click="router.back()"
-          class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+          class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold rounded-xl transition-colors"
         >
           Annuler
         </button>
         <button
           type="submit"
           :disabled="loading"
-          class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50"
+          class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-sm font-semibold rounded-xl transition-colors shadow-sm shadow-indigo-600/10"
         >
           {{ loading ? "Envoi en cours..." : "Soumettre l'incident" }}
         </button>

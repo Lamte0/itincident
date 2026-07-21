@@ -38,14 +38,14 @@ const filterStatut = ref("CLOTURE");
 
 function getStatutBadge(statut: string) {
   const badges: Record<string, string> = {
-    OUVERT: "bg-red-100 text-red-800",
-    AFFECTE: "bg-blue-100 text-blue-800",
-    EN_COURS: "bg-yellow-100 text-yellow-800",
-    RESOLU: "bg-green-100 text-green-800",
-    EN_ATTENTE_VALIDATION: "bg-purple-100 text-purple-800",
-    CLOTURE: "bg-gray-100 text-gray-800",
+    OUVERT: "bg-red-50 text-red-700 border border-red-100",
+    AFFECTE: "bg-blue-50 text-blue-700 border border-blue-100",
+    EN_COURS: "bg-amber-50 text-amber-700 border border-amber-100",
+    RESOLU: "bg-emerald-50 text-emerald-700 border border-emerald-100",
+    EN_ATTENTE_VALIDATION: "bg-purple-50 text-purple-700 border border-purple-100",
+    CLOTURE: "bg-slate-100 text-slate-700 border border-slate-200",
   };
-  return badges[statut] || "bg-gray-100 text-gray-800";
+  return badges[statut] || "bg-slate-100 text-slate-700 border border-slate-200";
 }
 
 function formatDate(date: string) {
@@ -100,8 +100,8 @@ async function exportIncidents(format: "pdf" | "excel") {
   loading.value = true;
   try {
     const response = await reportService.exportIncidents({
-      date_debut: filters.value.date_debut,
-      date_fin: filters.value.date_fin,
+      date_debut: filters.value.date_debut || "",
+      date_fin: filters.value.date_fin || "",
       format,
     });
     const extension = format === "pdf" ? "pdf" : "xlsx";
@@ -136,47 +136,43 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
-    <div class="mb-6">
-      <h1 class="text-2xl font-bold text-gray-900">Rapports</h1>
-      <p class="mt-1 text-sm text-gray-500">
-        Générer des fiches d'intervention et exporter les données
+  <div class="space-y-6">
+    <div class="space-y-1">
+      <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Rapports</h1>
+      <p class="text-sm text-slate-500">
+        Générer des fiches d'intervention et exporter les données d'incidents.
       </p>
     </div>
 
     <!-- Filtres et Export -->
-    <div class="bg-white shadow rounded-lg p-6 mb-6">
-      <div class="flex items-center mb-4">
-        <FunnelIcon class="h-5 w-5 text-gray-400 mr-2" />
-        <h2 class="text-lg font-medium text-gray-900">Filtres et Export</h2>
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm space-y-6">
+      <div class="flex items-center gap-2 pb-4 border-b border-slate-100">
+        <FunnelIcon class="h-5 w-5 text-slate-400" />
+        <h2 class="text-base font-bold text-slate-800">Filtres et Export</h2>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700"
-            >Date de début</label
-          >
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="space-y-1.5">
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Date de début</label>
           <input
             v-model="filters.date_debut"
             type="date"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+            class="block w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 focus:bg-white transition-all"
           />
         </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700"
-            >Date de fin</label
-          >
+        <div class="space-y-1.5">
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Date de fin</label>
           <input
             v-model="filters.date_fin"
             type="date"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+            class="block w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 focus:bg-white transition-all"
           />
         </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Statut</label>
+        <div class="space-y-1.5">
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Statut</label>
           <select
             v-model="filterStatut"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+            class="block w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/25 focus:border-indigo-500 focus:bg-white transition-all"
           >
             <option
               v-for="opt in statutOptions"
@@ -191,7 +187,7 @@ onMounted(() => {
           <button
             @click="fetchIncidents"
             :disabled="loadingIncidents"
-            class="px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-md hover:bg-primary-700 disabled:opacity-50"
+            class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-sm transition-colors disabled:opacity-50 w-full"
           >
             <span v-if="loadingIncidents">Chargement...</span>
             <span v-else>Filtrer</span>
@@ -199,25 +195,25 @@ onMounted(() => {
         </div>
       </div>
 
-      <div class="border-t border-gray-200 pt-4">
-        <h3 class="text-sm font-medium text-gray-700 mb-3">
+      <div class="border-t border-slate-100 pt-6 space-y-3">
+        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">
           Exporter tous les incidents de la période
         </h3>
-        <div class="flex space-x-3">
+        <div class="flex flex-wrap gap-3">
           <button
             @click="exportIncidents('pdf')"
             :disabled="loading"
-            class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
+            class="inline-flex items-center justify-center px-4 py-2.5 border border-slate-250 bg-white hover:bg-slate-50 font-semibold rounded-xl text-sm text-slate-700 transition-colors shadow-sm gap-2"
           >
-            <DocumentTextIcon class="h-5 w-5 mr-2 text-red-500" />
+            <DocumentTextIcon class="h-4.5 w-4.5 text-red-500" />
             Export PDF
           </button>
           <button
             @click="exportIncidents('excel')"
             :disabled="loading"
-            class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
+            class="inline-flex items-center justify-center px-4 py-2.5 border border-slate-250 bg-white hover:bg-slate-50 font-semibold rounded-xl text-sm text-slate-700 transition-colors shadow-sm gap-2"
           >
-            <TableCellsIcon class="h-5 w-5 mr-2 text-green-500" />
+            <TableCellsIcon class="h-4.5 w-4.5 text-green-550" />
             Export Excel
           </button>
         </div>
@@ -225,104 +221,96 @@ onMounted(() => {
     </div>
 
     <!-- Fiches d'intervention -->
-    <div class="bg-white shadow rounded-lg p-6">
-      <div class="flex items-center mb-4">
-        <DocumentArrowDownIcon class="h-5 w-5 text-gray-400 mr-2" />
-        <h2 class="text-lg font-medium text-gray-900">Fiches d'intervention</h2>
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm space-y-6">
+      <div class="flex items-center gap-2 pb-4 border-b border-slate-100">
+        <DocumentArrowDownIcon class="h-5 w-5 text-slate-400" />
+        <h2 class="text-base font-bold text-slate-800">Fiches d'intervention</h2>
       </div>
 
-      <p class="text-sm text-gray-500 mb-4">
-        Sélectionnez un incident clôturé pour générer sa fiche d'intervention
-        PDF.
+      <p class="text-sm text-slate-500">
+        Sélectionnez un incident clôturé pour générer sa fiche d'intervention PDF officielle.
       </p>
 
       <!-- Loading -->
-      <div v-if="loadingIncidents" class="flex justify-center py-8">
-        <div
-          class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"
-        ></div>
+      <div v-if="loadingIncidents" class="flex justify-center py-10">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
       </div>
 
       <!-- Liste des incidents -->
       <div
         v-else-if="incidents.length === 0"
-        class="text-center py-8 text-gray-500"
+        class="text-center py-8 text-slate-550 text-sm font-medium"
       >
         Aucun incident trouvé pour cette période et ce statut.
       </div>
 
-      <div v-else class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+      <div v-else class="overflow-x-auto border border-slate-150 rounded-2xl overflow-hidden">
+        <table class="min-w-full divide-y divide-slate-200">
+          <thead class="bg-slate-50/75">
             <tr>
               <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3.5 text-left text-xs font-bold text-slate-450 uppercase tracking-wider"
               >
                 Référence
               </th>
               <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3.5 text-left text-xs font-bold text-slate-450 uppercase tracking-wider"
               >
                 Titre
               </th>
               <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3.5 text-left text-xs font-bold text-slate-450 uppercase tracking-wider"
               >
                 Statut
               </th>
               <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3.5 text-left text-xs font-bold text-slate-450 uppercase tracking-wider"
               >
                 Auteur
               </th>
               <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3.5 text-left text-xs font-bold text-slate-450 uppercase tracking-wider"
               >
                 Maintenancier
               </th>
               <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3.5 text-left text-xs font-bold text-slate-450 uppercase tracking-wider"
               >
                 Date clôture
               </th>
               <th
-                class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                class="px-6 py-3.5 text-right text-xs font-bold text-slate-450 uppercase tracking-wider"
               >
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody class="bg-white divide-y divide-slate-100">
             <tr
               v-for="incident in incidents"
               :key="incident.id"
-              class="hover:bg-gray-50"
+              class="hover:bg-slate-50/50 transition-colors"
             >
               <td
-                class="px-6 py-4 whitespace-nowrap text-sm font-medium text-primary-600"
+                class="px-6 py-4 whitespace-nowrap text-sm font-bold text-indigo-650"
               >
                 {{ incident.reference }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-slate-700">
                 {{ incident.titre }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <span
-                  :class="[
-                    'px-2 inline-flex text-xs leading-5 font-semibold rounded-full',
-                    getStatutBadge(incident.statut),
-                  ]"
-                >
+                <span :class="['px-2 py-0.5 text-[11px] font-bold rounded-md', getStatutBadge(incident.statut)]">
                   {{ incident.statut.replace(/_/g, " ") }}
                 </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 font-semibold">
                 {{ incident.auteur?.name }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 font-semibold">
                 {{ incident.affectation_active?.maintenancier?.name || "-" }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 font-semibold">
                 {{
                   incident.date_cloture
                     ? formatDate(incident.date_cloture)
@@ -336,12 +324,12 @@ onMounted(() => {
                   v-if="incident.statut === 'CLOTURE'"
                   @click="downloadFicheIntervention(incident.id)"
                   :disabled="loading"
-                  class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50"
+                  class="inline-flex items-center justify-center px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg text-xs transition-colors disabled:opacity-50 gap-1.5 shadow-sm shadow-indigo-650/10"
                 >
-                  <DocumentArrowDownIcon class="h-4 w-4 mr-1" />
+                  <DocumentArrowDownIcon class="h-3.5 w-3.5" />
                   Fiche PDF
                 </button>
-                <span v-else class="text-gray-400 text-xs">
+                <span v-else class="text-slate-400 text-xs font-semibold">
                   Non disponible
                 </span>
               </td>
@@ -352,22 +340,19 @@ onMounted(() => {
     </div>
 
     <!-- Aide -->
-    <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-      <h3 class="text-sm font-medium text-blue-800 mb-2">
-        À propos des fiches d'intervention
+    <div class="bg-indigo-50/40 border border-indigo-100/85 rounded-2xl p-5 space-y-2">
+      <h3 class="text-sm font-bold text-indigo-950 flex items-center gap-2">
+        <span>💡</span> À propos des fiches d'intervention
       </h3>
-      <ul class="text-sm text-blue-700 list-disc list-inside space-y-1">
+      <ul class="text-sm text-indigo-850 list-disc list-inside space-y-1.5 pl-1 leading-relaxed font-medium">
         <li>
-          Les fiches d'intervention ne sont disponibles que pour les incidents
-          clôturés.
+          Les fiches d'intervention ne sont générables que pour les incidents ayant le statut <strong class="text-indigo-950">Clôturé</strong>.
         </li>
         <li>
-          Chaque fiche contient : les informations de l'incident, le rapport
-          d'intervention du maintenancier, et la validation de l'utilisateur.
+          Chaque document PDF regroupe l'historique complet, le rapport d'intervention du technicien et la validation de l'utilisateur.
         </li>
         <li>
-          L'export Excel permet d'analyser les données dans un tableur pour des
-          statistiques personnalisées.
+          L'export au format Excel est idéal pour l'analyse globale et la création de tableaux croisés dynamiques.
         </li>
       </ul>
     </div>

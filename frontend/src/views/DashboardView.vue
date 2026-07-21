@@ -8,6 +8,7 @@ import {
   UsersIcon,
   ClipboardDocumentListIcon,
   ChartBarIcon,
+  ArrowRightIcon,
 } from "@heroicons/vue/24/outline";
 
 const authStore = useAuthStore();
@@ -18,203 +19,241 @@ const stats = [
     name: "Incidents ouverts",
     value: "--",
     icon: ExclamationTriangleIcon,
-    color: "bg-red-500",
+    color: "from-red-500 to-rose-600 shadow-red-500/20",
+    bgColor: "bg-red-50",
+    textColor: "text-red-600",
   },
   {
     name: "En cours de traitement",
     value: "--",
     icon: ClockIcon,
-    color: "bg-yellow-500",
+    color: "from-amber-400 to-orange-500 shadow-orange-500/20",
+    bgColor: "bg-amber-50",
+    textColor: "text-amber-600",
   },
   {
     name: "Résolus ce mois",
     value: "--",
     icon: CheckCircleIcon,
-    color: "bg-green-500",
+    color: "from-emerald-400 to-teal-500 shadow-emerald-500/20",
+    bgColor: "bg-emerald-50",
+    textColor: "text-emerald-600",
   },
   {
     name: "Total interventions",
     value: "--",
     icon: WrenchScrewdriverIcon,
-    color: "bg-blue-500",
+    color: "from-blue-500 to-indigo-600 shadow-blue-500/20",
+    bgColor: "bg-blue-50",
+    textColor: "text-blue-600",
   },
 ];
 </script>
 
 <template>
-  <div>
-    <div class="mb-8">
-      <h1 class="text-2xl font-bold text-gray-900">
-        Bonjour, {{ authStore.user?.name }} 👋
-      </h1>
-      <p class="mt-1 text-sm text-gray-500">
-        Bienvenue sur le système de gestion des incidents informatiques de la
-        DGTCP
-      </p>
+  <div class="space-y-8">
+    <!-- Welcome Banner Card -->
+    <div class="relative bg-gradient-to-r from-indigo-900 via-indigo-800 to-violet-800 rounded-3xl p-8 md:p-10 text-white overflow-hidden shadow-xl shadow-indigo-900/10">
+      <!-- Decorative background shapes -->
+      <div class="absolute -top-24 -left-24 w-80 h-80 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute bottom-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none"></div>
+      
+      <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="space-y-3">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full text-xs font-semibold tracking-wider uppercase text-indigo-200 border border-white/10">
+            <span class="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse-soft"></span>
+            Session Active
+          </span>
+          <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight">
+            Bonjour, {{ authStore.user?.name }} 👋
+          </h1>
+          <p class="text-indigo-200 text-sm md:text-base max-w-2xl leading-relaxed">
+            Bienvenue sur le système de gestion des incidents de la Direction Générale du Trésor et de la Comptabilité Publique. Suivez et gérez vos incidents informatiques en temps réel.
+          </p>
+        </div>
+        <div class="flex-shrink-0 flex items-center gap-4">
+          <RouterLink
+            to="/incidents/nouveau"
+            class="px-5 py-3 bg-white text-indigo-700 hover:bg-indigo-50 font-semibold rounded-2xl shadow-lg transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 text-sm flex items-center gap-2"
+          >
+            <span>Signaler un incident</span>
+            <ArrowRightIcon class="h-4 w-4" />
+          </RouterLink>
+        </div>
+      </div>
     </div>
 
-    <!-- Stats -->
-    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-      <div
-        v-for="stat in stats"
-        :key="stat.name"
-        class="bg-white overflow-hidden shadow rounded-lg"
-      >
-        <div class="p-5">
-          <div class="flex items-center">
-            <div :class="[stat.color, 'flex-shrink-0 rounded-md p-3']">
-              <component :is="stat.icon" class="h-6 w-6 text-white" />
-            </div>
-            <div class="ml-5 w-0 flex-1">
-              <dl>
-                <dt class="text-sm font-medium text-gray-500 truncate">
-                  {{ stat.name }}
-                </dt>
-                <dd class="text-lg font-semibold text-gray-900">
-                  {{ stat.value }}
-                </dd>
-              </dl>
-            </div>
+    <!-- Stats Grid -->
+    <div class="space-y-4">
+      <h2 class="text-lg font-bold text-slate-800 tracking-tight">Statistiques générales</h2>
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div
+          v-for="stat in stats"
+          :key="stat.name"
+          class="bg-white border border-slate-200/60 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-indigo-100 transition-all duration-300 hover:-translate-y-0.5 card-glow flex items-center gap-5"
+        >
+          <div :class="[stat.bgColor, 'flex-shrink-0 rounded-2xl p-4 flex items-center justify-center']">
+            <component :is="stat.icon" :class="['h-7 w-7', stat.textColor]" />
+          </div>
+          <div class="min-w-0 flex-1 space-y-1">
+            <p class="text-xs font-semibold text-slate-500 tracking-wide uppercase truncate">
+              {{ stat.name }}
+            </p>
+            <p class="text-3xl font-extrabold text-slate-800">
+              {{ stat.value }}
+            </p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Actions rapides -->
-    <div class="bg-white shadow rounded-lg p-6 mb-8">
-      <h2 class="text-lg font-medium text-gray-900 mb-4">Actions rapides</h2>
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <!-- Quick Actions -->
+    <div class="space-y-4">
+      <h2 class="text-lg font-bold text-slate-800 tracking-tight">Actions rapides</h2>
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <!-- Signaler un incident -->
         <RouterLink
           to="/incidents/nouveau"
-          class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-primary-400 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500"
+          class="group relative bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-indigo-500/30 transition-all duration-200 hover:-translate-y-0.5 flex items-start gap-4 card-glow"
         >
-          <div class="flex-shrink-0">
-            <ExclamationTriangleIcon class="h-10 w-10 text-primary-600" />
+          <div class="flex-shrink-0 bg-indigo-50 text-indigo-600 rounded-xl p-3 group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-300">
+            <ExclamationTriangleIcon class="h-6 w-6" />
           </div>
-          <div class="flex-1 min-w-0">
-            <span class="absolute inset-0" aria-hidden="true"></span>
-            <p class="text-sm font-medium text-gray-900">
+          <div class="space-y-1">
+            <h3 class="font-bold text-slate-800 text-sm group-hover:text-indigo-600 transition-colors">
               Signaler un incident
+            </h3>
+            <p class="text-xs text-slate-500 leading-relaxed">
+              Déclarez rapidement une nouvelle panne ou demande d'assistance technique.
             </p>
-            <p class="text-sm text-gray-500">Créer une nouvelle déclaration</p>
           </div>
         </RouterLink>
 
+        <!-- Mes Incidents -->
         <RouterLink
           to="/mes-incidents"
-          class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-primary-400 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500"
+          class="group relative bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-indigo-500/30 transition-all duration-200 hover:-translate-y-0.5 flex items-start gap-4 card-glow"
         >
-          <div class="flex-shrink-0">
-            <ClockIcon class="h-10 w-10 text-yellow-600" />
+          <div class="flex-shrink-0 bg-amber-50 text-amber-600 rounded-xl p-3 group-hover:bg-amber-500 group-hover:text-white transition-colors duration-300">
+            <ClockIcon class="h-6 w-6" />
           </div>
-          <div class="flex-1 min-w-0">
-            <span class="absolute inset-0" aria-hidden="true"></span>
-            <p class="text-sm font-medium text-gray-900">Mes incidents</p>
-            <p class="text-sm text-gray-500">Suivre mes déclarations</p>
+          <div class="space-y-1">
+            <h3 class="font-bold text-slate-800 text-sm group-hover:text-indigo-600 transition-colors">
+              Mes incidents
+            </h3>
+            <p class="text-xs text-slate-500 leading-relaxed">
+              Consultez et suivez l'avancement de vos demandes d'incidents déclarées.
+            </p>
           </div>
         </RouterLink>
 
+        <!-- Statistiques (Chef Service) -->
         <RouterLink
           v-if="authStore.isChefService"
           to="/statistiques"
-          class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-primary-400 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500"
+          class="group relative bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-indigo-500/30 transition-all duration-200 hover:-translate-y-0.5 flex items-start gap-4 card-glow"
         >
-          <div class="flex-shrink-0">
-            <CheckCircleIcon class="h-10 w-10 text-green-600" />
+          <div class="flex-shrink-0 bg-emerald-50 text-emerald-600 rounded-xl p-3 group-hover:bg-emerald-500 group-hover:text-white transition-colors duration-300">
+            <ChartBarIcon class="h-6 w-6" />
           </div>
-          <div class="flex-1 min-w-0">
-            <span class="absolute inset-0" aria-hidden="true"></span>
-            <p class="text-sm font-medium text-gray-900">Statistiques</p>
-            <p class="text-sm text-gray-500">Voir les restitutions</p>
+          <div class="space-y-1">
+            <h3 class="font-bold text-slate-800 text-sm group-hover:text-indigo-600 transition-colors">
+              Statistiques
+            </h3>
+            <p class="text-xs text-slate-500 leading-relaxed">
+              Consultez les tableaux de bord analytiques et les indicateurs clés.
+            </p>
           </div>
         </RouterLink>
 
+        <!-- Mes Interventions (Maintenancier) -->
         <RouterLink
           v-if="authStore.isMaintenancier"
           to="/interventions"
-          class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-primary-400 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500"
+          class="group relative bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-indigo-500/30 transition-all duration-200 hover:-translate-y-0.5 flex items-start gap-4 card-glow"
         >
-          <div class="flex-shrink-0">
-            <WrenchScrewdriverIcon class="h-10 w-10 text-blue-600" />
+          <div class="flex-shrink-0 bg-blue-50 text-blue-600 rounded-xl p-3 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
+            <WrenchScrewdriverIcon class="h-6 w-6" />
           </div>
-          <div class="flex-1 min-w-0">
-            <span class="absolute inset-0" aria-hidden="true"></span>
-            <p class="text-sm font-medium text-gray-900">Mes interventions</p>
-            <p class="text-sm text-gray-500">Incidents à traiter</p>
+          <div class="space-y-1">
+            <h3 class="font-bold text-slate-800 text-sm group-hover:text-indigo-600 transition-colors">
+              Mes interventions
+            </h3>
+            <p class="text-xs text-slate-500 leading-relaxed">
+              Gérez vos interventions en cours et résolvez les pannes assignées.
+            </p>
           </div>
         </RouterLink>
 
-        <!-- Actions Admin -->
+        <!-- Utilisateurs (Admin) -->
         <RouterLink
           v-if="authStore.isAdmin"
           to="/utilisateurs"
-          class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-primary-400 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500"
+          class="group relative bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-indigo-500/30 transition-all duration-200 hover:-translate-y-0.5 flex items-start gap-4 card-glow"
         >
-          <div class="flex-shrink-0">
-            <UsersIcon class="h-10 w-10 text-purple-600" />
+          <div class="flex-shrink-0 bg-purple-50 text-purple-600 rounded-xl p-3 group-hover:bg-purple-600 group-hover:text-white transition-colors duration-300">
+            <UsersIcon class="h-6 w-6" />
           </div>
-          <div class="flex-1 min-w-0">
-            <span class="absolute inset-0" aria-hidden="true"></span>
-            <p class="text-sm font-medium text-gray-900">Utilisateurs</p>
-            <p class="text-sm text-gray-500">Gérer les utilisateurs et rôles</p>
+          <div class="space-y-1">
+            <h3 class="font-bold text-slate-800 text-sm group-hover:text-indigo-600 transition-colors">
+              Utilisateurs
+            </h3>
+            <p class="text-xs text-slate-500 leading-relaxed">
+              Gérez les comptes utilisateurs, affectez des rôles et modifiez les profils.
+            </p>
           </div>
         </RouterLink>
 
+        <!-- Tous les incidents (Admin / Chef) -->
         <RouterLink
-          v-if="authStore.isAdmin"
+          v-if="authStore.isAdmin || authStore.isChefService"
           to="/incidents"
-          class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-primary-400 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500"
+          class="group relative bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-indigo-500/30 transition-all duration-200 hover:-translate-y-0.5 flex items-start gap-4 card-glow"
         >
-          <div class="flex-shrink-0">
-            <ClipboardDocumentListIcon class="h-10 w-10 text-indigo-600" />
+          <div class="flex-shrink-0 bg-teal-50 text-teal-600 rounded-xl p-3 group-hover:bg-teal-600 group-hover:text-white transition-colors duration-300">
+            <ClipboardDocumentListIcon class="h-6 w-6" />
           </div>
-          <div class="flex-1 min-w-0">
-            <span class="absolute inset-0" aria-hidden="true"></span>
-            <p class="text-sm font-medium text-gray-900">Tous les incidents</p>
-            <p class="text-sm text-gray-500">Vue complète des incidents</p>
-          </div>
-        </RouterLink>
-
-        <RouterLink
-          v-if="authStore.isAdmin"
-          to="/affectations"
-          class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-primary-400 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500"
-        >
-          <div class="flex-shrink-0">
-            <ChartBarIcon class="h-10 w-10 text-teal-600" />
-          </div>
-          <div class="flex-1 min-w-0">
-            <span class="absolute inset-0" aria-hidden="true"></span>
-            <p class="text-sm font-medium text-gray-900">Affectations</p>
-            <p class="text-sm text-gray-500">Assigner aux techniciens</p>
+          <div class="space-y-1">
+            <h3 class="font-bold text-slate-800 text-sm group-hover:text-indigo-600 transition-colors">
+              Tous les incidents
+            </h3>
+            <p class="text-xs text-slate-500 leading-relaxed">
+              Accédez à la base globale de l'ensemble des pannes déclarées.
+            </p>
           </div>
         </RouterLink>
       </div>
     </div>
 
-    <!-- Informations -->
-    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded">
-      <div class="flex">
-        <div class="flex-shrink-0">
-          <svg
-            class="h-5 w-5 text-blue-400"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-              clip-rule="evenodd"
-            />
+    <!-- Workflow Informative Section -->
+    <div class="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-6">
+      <div class="flex items-start gap-4">
+        <div class="flex-shrink-0 bg-indigo-100 text-indigo-600 rounded-xl p-2 mt-0.5">
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
-        <div class="ml-3">
-          <p class="text-sm text-blue-700">
-            <strong>Workflow des incidents :</strong> Ouvert → Affecté → En
-            cours → Résolu → En attente de validation → Clôturé
+        <div class="space-y-2">
+          <h3 class="text-sm font-bold text-slate-800">Processus de traitement des incidents</h3>
+          <p class="text-xs text-slate-600 leading-relaxed max-w-4xl">
+            Pour assurer un traitement efficace, chaque incident suit un parcours structuré au sein de la DGTCP.
           </p>
+          <div class="flex flex-wrap items-center gap-2 pt-2 text-xs font-semibold">
+            <span class="px-2.5 py-1 bg-red-100 text-red-800 rounded-lg">Ouvert</span>
+            <span class="text-slate-400">→</span>
+            <span class="px-2.5 py-1 bg-blue-100 text-blue-800 rounded-lg">Affecté</span>
+            <span class="text-slate-400">→</span>
+            <span class="px-2.5 py-1 bg-yellow-100 text-yellow-800 rounded-lg">En cours</span>
+            <span class="text-slate-400">→</span>
+            <span class="px-2.5 py-1 bg-green-100 text-green-800 rounded-lg">Résolu</span>
+            <span class="text-slate-400">→</span>
+            <span class="px-2.5 py-1 bg-purple-100 text-purple-800 rounded-lg">Validation</span>
+            <span class="text-slate-400">→</span>
+            <span class="px-2.5 py-1 bg-slate-200 text-slate-800 rounded-lg">Clôturé</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
