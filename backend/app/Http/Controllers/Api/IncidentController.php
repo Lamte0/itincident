@@ -38,17 +38,20 @@ class IncidentController extends Controller
         }
 
         // Filtres
-        if ($request->has('statut') && $request->statut) {
+        if ($request->filled('statut')) {
             $query->where('statut', $request->statut);
         }
-        if ($request->has('type') && $request->type) {
+        if ($request->filled('type')) {
             $query->where('type', $request->type);
         }
-        if ($request->has('priorite') && $request->priorite) {
+        if ($request->filled('priorite')) {
             $query->where('priorite', $request->priorite);
         }
-        if ($request->has('date_debut') && $request->has('date_fin')) {
-            $query->whereBetween('created_at', [$request->date_debut, $request->date_fin]);
+        if ($request->filled('date_debut') && $request->filled('date_fin')) {
+            $query->whereBetween('created_at', [
+                \Illuminate\Support\Carbon::parse($request->date_debut)->startOfDay(),
+                \Illuminate\Support\Carbon::parse($request->date_fin)->endOfDay()
+            ]);
         }
 
         // Tri par date de création décroissante

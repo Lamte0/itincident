@@ -69,7 +69,7 @@ class IncidentAssignment extends Model
     /**
      * Marque l'affectation comme résolue
      */
-    public function marquerResolu(string $rapportIntervention = null): void
+    public function marquerResolu(?string $rapportIntervention = null): void
     {
         $this->update([
             'date_resolution' => now(),

@@ -95,7 +95,7 @@ async function handleSubmit() {
         <!-- Form Card -->
         <div class="bg-white/80 backdrop-blur-xl sm:bg-white shadow-2xl shadow-indigo-100/50 rounded-3xl p-8 border border-white/50 lg:border-none">
           <div class="hidden lg:block mb-8">
-            <h2 class="text-3xl font-bold text-slate-900 mb-2">Créer un compte ✨</h2>
+            <h2 class="text-3xl font-bold text-slate-900 mb-2">Créer un compte</h2>
             <p class="text-slate-500">Remplissez les informations ci-dessous.</p>
           </div>
 

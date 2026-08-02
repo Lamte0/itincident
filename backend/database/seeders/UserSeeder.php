@@ -14,9 +14,8 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Admin
-        User::create([
+        User::firstOrCreate(['email' => 'admin@dgtcp.ci'], [
             'name' => 'Administrateur Système',
-            'email' => 'admin@dgtcp.ci',
             'password' => Hash::make('password'),
             'role' => 'ADMIN',
             'service' => 'Direction Informatique',
@@ -24,9 +23,8 @@ class UserSeeder extends Seeder
         ]);
 
         // Chef Service Maintenance
-        User::create([
+        User::firstOrCreate(['email' => 'chef.maintenance@dgtcp.ci'], [
             'name' => 'Chef Service Maintenance',
-            'email' => 'chef.maintenance@dgtcp.ci',
             'password' => Hash::make('password'),
             'role' => 'CHEF_SERVICE',
             'service' => 'Service Maintenance',
@@ -34,27 +32,24 @@ class UserSeeder extends Seeder
         ]);
 
         // Maintenanciers
-        User::create([
+        User::firstOrCreate(['email' => 'tech.reseau@dgtcp.ci'], [
             'name' => 'Technicien Réseau',
-            'email' => 'tech.reseau@dgtcp.ci',
             'password' => Hash::make('password'),
             'role' => 'MAINTENANCIER',
             'service' => 'Service Maintenance',
             'matricule' => 'MTN001',
         ]);
 
-        User::create([
+        User::firstOrCreate(['email' => 'tech.hardware@dgtcp.ci'], [
             'name' => 'Technicien Hardware',
-            'email' => 'tech.hardware@dgtcp.ci',
             'password' => Hash::make('password'),
             'role' => 'MAINTENANCIER',
             'service' => 'Service Maintenance',
             'matricule' => 'MTN002',
         ]);
 
-        User::create([
+        User::firstOrCreate(['email' => 'tech.logiciel@dgtcp.ci'], [
             'name' => 'Technicien Logiciel',
-            'email' => 'tech.logiciel@dgtcp.ci',
             'password' => Hash::make('password'),
             'role' => 'MAINTENANCIER',
             'service' => 'Service Maintenance',
@@ -62,27 +57,24 @@ class UserSeeder extends Seeder
         ]);
 
         // Utilisateurs standards
-        User::create([
+        User::firstOrCreate(['email' => 'jean.dupont@dgtcp.ci'], [
             'name' => 'Jean Dupont',
-            'email' => 'jean.dupont@dgtcp.ci',
             'password' => Hash::make('password'),
             'role' => 'UTILISATEUR',
             'service' => 'Service Comptabilité',
             'matricule' => 'USR001',
         ]);
 
-        User::create([
+        User::firstOrCreate(['email' => 'marie.kouassi@dgtcp.ci'], [
             'name' => 'Marie Kouassi',
-            'email' => 'marie.kouassi@dgtcp.ci',
             'password' => Hash::make('password'),
             'role' => 'UTILISATEUR',
             'service' => 'Service Budget',
             'matricule' => 'USR002',
         ]);
 
-        User::create([
+        User::firstOrCreate(['email' => 'pierre.konan@dgtcp.ci'], [
             'name' => 'Pierre Konan',
-            'email' => 'pierre.konan@dgtcp.ci',
             'password' => Hash::make('password'),
             'role' => 'UTILISATEUR',
             'service' => 'Service Trésorerie',

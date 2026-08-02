@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useIncidentStore } from "@/stores/incidents";
 import { useAuthStore } from "@/stores/auth";
 import { userService } from "@/services/api";
@@ -18,6 +18,18 @@ const incidentStore = useIncidentStore();
 const authStore = useAuthStore();
 const searchQuery = ref("");
 const showFilters = ref(false);
+let pollingInterval: ReturnType<typeof setInterval> | null = null;
+
+const filteredIncidents = computed(() => {
+  if (!searchQuery.value) return incidentStore.incidents;
+  const q = searchQuery.value.toLowerCase().trim();
+  return incidentStore.incidents.filter(
+    (i) =>
+      i.reference?.toLowerCase().includes(q) ||
+      i.titre?.toLowerCase().includes(q) ||
+      (i.auteur?.name && i.auteur.name.toLowerCase().includes(q))
+  );
+});
 
 // Modal d'affectation
 const showAffectationModal = ref(false);
@@ -145,7 +157,7 @@ async function affecterIncident() {
 // Vérifier si l'utilisateur peut affecter
 function canAffecter(incident: Incident): boolean {
   return (
-    authStore.hasRole(["CHEF_SERVICE", "ADMIN"]) && incident.statut === "OUVERT"
+    authStore.hasRole(["CHEF_SERVICE", "ADMIN"]) && (incident.statut === "OUVERT" || incident.statut === "AFFECTE")
   );
 }
 
@@ -162,11 +174,22 @@ function closeAffectationModal() {
   affectationForm.value = { maintenancier_id: 0, instructions: "" };
 }
 
+async function loadData(isBackground = false) {
+  await incidentStore.fetchIncidents(1, 50, isBackground);
+}
+
 onMounted(() => {
-  incidentStore.fetchIncidents();
-  // Charger les maintenanciers si l'utilisateur peut affecter
+  incidentStore.clearFilters();
+  loadData(false);
   if (authStore.hasRole(["CHEF_SERVICE", "ADMIN"])) {
     loadMaintenanciers();
+  }
+  pollingInterval = setInterval(() => loadData(true), 10000);
+});
+
+onUnmounted(() => {
+  if (pollingInterval) {
+    clearInterval(pollingInterval);
   }
 });
 </script>
@@ -288,7 +311,7 @@ onMounted(() => {
     </div>
 
     <!-- Loading -->
-    <div v-if="incidentStore.loading" class="flex justify-center py-16">
+    <div v-if="incidentStore.incidentsLoading" class="flex justify-center py-16">
       <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
     </div>
 
@@ -309,13 +332,13 @@ onMounted(() => {
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 bg-white">
-            <tr v-if="incidentStore.incidents.length === 0">
+            <tr v-if="filteredIncidents.length === 0">
               <td colspan="8" class="px-6 py-12 text-center text-slate-400 text-sm">
                 Aucun incident trouvé
               </td>
             </tr>
             <tr
-              v-for="incident in incidentStore.incidents"
+              v-for="incident in filteredIncidents"
               :key="incident.id"
               class="hover:bg-slate-50/40 transition-colors"
             >

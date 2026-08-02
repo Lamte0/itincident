@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { onMounted, onUnmounted } from "vue";
 import { useIncidentStore } from "@/stores/incidents";
 import { RouterLink } from "vue-router";
 import { EyeIcon, PlusIcon } from "@heroicons/vue/24/outline";
 
 const incidentStore = useIncidentStore();
+let pollingInterval: ReturnType<typeof setInterval> | null = null;
 
 function getStatutBadge(statut: string) {
   const badges: Record<string, string> = {
@@ -29,7 +30,16 @@ function getPrioriteBadge(priorite: string) {
 }
 
 onMounted(() => {
-  incidentStore.fetchMyIncidents();
+  incidentStore.fetchMyIncidents(1, false);
+  pollingInterval = setInterval(() => {
+    incidentStore.fetchMyIncidents(1, true);
+  }, 10000);
+});
+
+onUnmounted(() => {
+  if (pollingInterval) {
+    clearInterval(pollingInterval);
+  }
 });
 </script>
 
@@ -54,13 +64,13 @@ onMounted(() => {
     </div>
 
     <!-- Loading -->
-    <div v-if="incidentStore.loading" class="flex justify-center py-16">
+    <div v-if="incidentStore.myIncidentsLoading" class="flex justify-center py-16">
       <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
     </div>
 
     <!-- Liste vide -->
     <div
-      v-else-if="incidentStore.incidents.length === 0"
+      v-else-if="incidentStore.myIncidents.length === 0"
       class="text-center py-12 bg-white border border-slate-200/80 rounded-2xl shadow-sm"
     >
       <svg
@@ -94,7 +104,7 @@ onMounted(() => {
     <!-- Liste des incidents -->
     <div v-else class="space-y-4">
       <div
-        v-for="incident in incidentStore.incidents"
+        v-for="incident in incidentStore.myIncidents"
         :key="incident.id"
         class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-slate-300 transition-all duration-200"
       >
@@ -138,7 +148,7 @@ onMounted(() => {
         >
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-purple-50/40 border border-purple-100 p-4 rounded-xl">
             <p class="text-sm text-purple-700 font-semibold flex items-center gap-2">
-              <span>✅</span> Cet incident a été résolu. Veuillez valider la clôture.
+              Cet incident a été résolu. Veuillez valider la clôture.
             </p>
             <RouterLink
               :to="`/incidents/${incident.id}`"

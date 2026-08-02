@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useIncidentStore } from "@/stores/incidents";
 import { userService } from "@/services/api";
 import type { User, Incident } from "@/types";
@@ -134,10 +134,25 @@ function changePage(page: number) {
   incidentStore.fetchIncidents(page);
 }
 
-onMounted(async () => {
+let pollingInterval: ReturnType<typeof setInterval> | null = null;
+
+async function refreshData(isBackground = false) {
   await loadMaintenanciers();
-  // Charger tous les incidents (avec une limite plus élevée pour voir toutes les affectations)
-  await incidentStore.fetchIncidents(1, 100);
+  if (!isBackground) {
+    incidentStore.clearFilters();
+  }
+  await incidentStore.fetchIncidents(1, 500, isBackground);
+}
+
+onMounted(() => {
+  refreshData(false);
+  pollingInterval = setInterval(() => refreshData(true), 10000);
+});
+
+onUnmounted(() => {
+  if (pollingInterval) {
+    clearInterval(pollingInterval);
+  }
 });
 </script>
 
@@ -237,7 +252,7 @@ onMounted(async () => {
     </div>
 
     <!-- Loading -->
-    <div v-if="incidentStore.loading" class="flex justify-center py-16">
+    <div v-if="incidentStore.incidentsLoading" class="flex justify-center py-16">
       <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
     </div>
 

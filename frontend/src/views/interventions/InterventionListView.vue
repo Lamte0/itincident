@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useIncidentStore } from "@/stores/incidents";
 import { useAuthStore } from "@/stores/auth";
 import { incidentService } from "@/services/api";
@@ -81,8 +81,10 @@ function formatDate(date: string) {
   });
 }
 
-async function fetchInterventions() {
-  loading.value = true;
+async function fetchInterventions(isBackground = false) {
+  if (!isBackground && interventions.value.length === 0) {
+    loading.value = true;
+  }
   errorMessage.value = null;
   try {
     // Utiliser l'endpoint dédié pour les interventions du maintenancier
@@ -102,7 +104,7 @@ async function fetchInterventions() {
 async function prendreEnCharge(incident: Incident) {
   try {
     await incidentStore.prendreEnCharge(incident.id);
-    await fetchInterventions();
+    await fetchInterventions(false);
   } catch (err) {
     console.error("Erreur lors de la prise en charge", err);
   }
@@ -115,8 +117,7 @@ function openResolutionModal(incident: Incident) {
 }
 
 async function resoudre() {
-  if (!selectedIncident.value || !resolutionForm.value.rapport_intervention)
-    return;
+  if (!selectedIncident.value || !resolutionForm.value.rapport_intervention) return;
   try {
     await incidentStore.resoudreIncident(
       selectedIncident.value.id,
@@ -124,14 +125,23 @@ async function resoudre() {
     );
     showResolutionModal.value = false;
     selectedIncident.value = null;
-    await fetchInterventions();
+    await fetchInterventions(false);
   } catch (err) {
     console.error("Erreur lors de la résolution", err);
   }
 }
 
+let pollingInterval: ReturnType<typeof setInterval> | null = null;
+
 onMounted(() => {
-  fetchInterventions();
+  fetchInterventions(false);
+  pollingInterval = setInterval(() => fetchInterventions(true), 10000);
+});
+
+onUnmounted(() => {
+  if (pollingInterval) {
+    clearInterval(pollingInterval);
+  }
 });
 </script>
 

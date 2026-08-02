@@ -4,10 +4,18 @@ import { incidentService } from "@/services/api";
 import type { Incident, PaginatedResponse } from "@/types";
 
 export const useIncidentStore = defineStore("incidents", () => {
+  // State distincts pour éviter les conflits d'écrasement entre vues
   const incidents = ref<Incident[]>([]);
+  const myIncidents = ref<Incident[]>([]);
+  const myInterventions = ref<Incident[]>([]);
   const currentIncident = ref<Incident | null>(null);
+
   const loading = ref(false);
+  const incidentsLoading = ref(false);
+  const myIncidentsLoading = ref(false);
+  const myInterventionsLoading = ref(false);
   const error = ref<string | null>(null);
+
   const pagination = ref({
     currentPage: 1,
     lastPage: 1,
@@ -15,7 +23,14 @@ export const useIncidentStore = defineStore("incidents", () => {
     total: 0,
   });
 
-  // Filtres
+  const myIncidentsPagination = ref({
+    currentPage: 1,
+    lastPage: 1,
+    perPage: 15,
+    total: 0,
+  });
+
+  // Filtres pour la liste globale
   const filters = ref({
     statut: "",
     type: "",
@@ -25,44 +40,45 @@ export const useIncidentStore = defineStore("incidents", () => {
   });
 
   // Actions
-  async function fetchIncidents(page = 1, perPage = 15) {
-    loading.value = true;
+  async function fetchIncidents(page = 1, perPage = 50, isBackground = false) {
+    if (!isBackground && incidents.value.length === 0) {
+      incidentsLoading.value = true;
+    }
     error.value = null;
 
+    const activeFilters: Record<string, any> = {};
+    if (filters.value.statut) activeFilters.statut = filters.value.statut;
+    if (filters.value.type) activeFilters.type = filters.value.type;
+    if (filters.value.priorite) activeFilters.priorite = filters.value.priorite;
+    if (filters.value.date_debut) activeFilters.date_debut = filters.value.date_debut;
+    if (filters.value.date_fin) activeFilters.date_fin = filters.value.date_fin;
+
     try {
-      console.log("Fetching incidents with params:", {
-        page,
-        per_page: perPage,
-        ...filters.value,
-      });
       const response = await incidentService.getAll({
         page,
         per_page: perPage,
-        ...filters.value,
+        ...activeFilters,
       });
-      console.log("API Full Response:", response);
-      console.log("API Response data:", response.data);
-      console.log("API Response data.data:", response.data.data);
-      console.log("API Response total:", response.data.total);
       const data: PaginatedResponse<Incident> = response.data;
-      incidents.value = data.data;
-      console.log("Incidents loaded:", incidents.value);
+      incidents.value = data.data || [];
       pagination.value = {
-        currentPage: data.current_page,
-        lastPage: data.last_page,
-        perPage: data.per_page,
-        total: data.total,
+        currentPage: data.current_page || 1,
+        lastPage: data.last_page || 1,
+        perPage: data.per_page || perPage,
+        total: data.total || 0,
       };
     } catch (err: any) {
       console.error("Error fetching incidents:", err);
       error.value = err.response?.data?.message || "Erreur lors du chargement";
     } finally {
-      loading.value = false;
+      incidentsLoading.value = false;
     }
   }
 
-  async function fetchMyIncidents(page = 1) {
-    loading.value = true;
+  async function fetchMyIncidents(page = 1, isBackground = false) {
+    if (!isBackground && myIncidents.value.length === 0) {
+      myIncidentsLoading.value = true;
+    }
     error.value = null;
 
     try {
@@ -71,17 +87,33 @@ export const useIncidentStore = defineStore("incidents", () => {
         statut: filters.value.statut,
       });
       const data: PaginatedResponse<Incident> = response.data;
-      incidents.value = data.data;
-      pagination.value = {
-        currentPage: data.current_page,
-        lastPage: data.last_page,
-        perPage: data.per_page,
-        total: data.total,
+      myIncidents.value = data.data || [];
+      myIncidentsPagination.value = {
+        currentPage: data.current_page || 1,
+        lastPage: data.last_page || 1,
+        perPage: data.per_page || 15,
+        total: data.total || 0,
       };
     } catch (err: any) {
       error.value = err.response?.data?.message || "Erreur lors du chargement";
     } finally {
-      loading.value = false;
+      myIncidentsLoading.value = false;
+    }
+  }
+
+  async function fetchMyInterventions(isBackground = false) {
+    if (!isBackground && myInterventions.value.length === 0) {
+      myInterventionsLoading.value = true;
+    }
+    error.value = null;
+
+    try {
+      const response = await incidentService.getMyInterventions();
+      myInterventions.value = response.data || [];
+    } catch (err: any) {
+      error.value = err.response?.data?.message || "Erreur lors du chargement des interventions";
+    } finally {
+      myInterventionsLoading.value = false;
     }
   }
 
@@ -243,14 +275,21 @@ export const useIncidentStore = defineStore("incidents", () => {
   return {
     // State
     incidents,
+    myIncidents,
+    myInterventions,
     currentIncident,
     loading,
+    incidentsLoading,
+    myIncidentsLoading,
+    myInterventionsLoading,
     error,
     pagination,
+    myIncidentsPagination,
     filters,
     // Actions
     fetchIncidents,
     fetchMyIncidents,
+    fetchMyInterventions,
     fetchIncident,
     createIncident,
     affecterIncident,

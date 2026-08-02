@@ -41,8 +41,8 @@ class ReportController extends Controller
             'date_fin' => ['required', 'date', 'after_or_equal:date_debut'],
         ]);
 
-        $dateDebut = $request->date_debut;
-        $dateFin = $request->date_fin;
+        $dateDebut = \Carbon\Carbon::parse($request->date_debut)->startOfDay();
+        $dateFin = \Carbon\Carbon::parse($request->date_fin)->endOfDay();
 
         // Total des incidents
         $totalIncidents = Incident::whereBetween('created_at', [$dateDebut, $dateFin])->count();
@@ -66,9 +66,14 @@ class ReportController extends Controller
             ->pluck('count', 'priorite');
 
         // Temps moyen de résolution (en heures)
+        $driver = DB::connection()->getDriverName();
+        $rawAvgSql = $driver === 'pgsql'
+            ? 'AVG(EXTRACT(EPOCH FROM (date_resolution - created_at)) / 3600) as temps_moyen'
+            : 'AVG(TIMESTAMPDIFF(HOUR, created_at, date_resolution)) as temps_moyen';
+
         $tempsMoyenResolution = Incident::whereBetween('created_at', [$dateDebut, $dateFin])
             ->whereNotNull('date_resolution')
-            ->selectRaw('AVG(TIMESTAMPDIFF(HOUR, created_at, date_resolution)) as temps_moyen')
+            ->selectRaw($rawAvgSql)
             ->first()
             ->temps_moyen ?? 0;
 

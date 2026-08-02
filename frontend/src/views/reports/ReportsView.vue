@@ -342,7 +342,7 @@ onMounted(() => {
     <!-- Aide -->
     <div class="bg-indigo-50/40 border border-indigo-100/85 rounded-2xl p-5 space-y-2">
       <h3 class="text-sm font-bold text-indigo-950 flex items-center gap-2">
-        <span>💡</span> À propos des fiches d'intervention
+        À propos des fiches d'intervention
       </h3>
       <ul class="text-sm text-indigo-850 list-disc list-inside space-y-1.5 pl-1 leading-relaxed font-medium">
         <li>
